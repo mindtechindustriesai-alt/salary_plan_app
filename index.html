@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SalaryPlan | Your Financial Intelligence</title>
+    
+    <!-- ===== PWA MANIFEST ===== -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#00B4D8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
+    
+    <!-- ===== EXTERNAL FONTS & LIBS ===== -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
+    <!-- ===== EXTERNAL CSS ===== -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/quantum-theme.css">
+    
+    <!-- ===== SERVICE WORKER ===== -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ SW Registered'))
+                .catch(err => console.log('❌ SW Error:', err));
+        }
+    </script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <!-- ===== HEADER ===== -->
+        <div class="salary-header">
+            <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+            <div class="salary-tagline">YOUR MONEY. YOUR PLAN. YOUR FUTURE.</div>
+            <div class="notification-area">
+                <div class="notification-icon" id="notificationIcon"><i class="fas fa-bell"></i><span class="badge" id="notificationBadge">0</span></div>
+                <div class="notification-box" id="notificationBox"></div>
+            </div>
+        </div>
+
+        <!-- ===== STATS ROW ===== -->
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-value" id="nettDisplay">R0</div><div class="stat-label">NETT SALARY</div></div>
+            <div class="stat-card"><div class="stat-value" id="totalFixedDisplay">R0</div><div class="stat-label">FIXED EXPENSES</div></div>
+            <div class="stat-card"><div class="stat-value" id="remainingDisplay">R0</div><div class="stat-label">REMAINING</div></div>
+            <div class="stat-card"><div class="stat-value" id="debtRemainingDisplay">R0</div><div class="stat-label">DEBT REMAINING</div></div>
+            <div class="stat-card"><div class="stat-value" id="surplusDisplay">R0</div><div class="stat-label">💰 FUNDS FOR SAVINGS</div><div id="cashStatus" class="cash-status status-yellow">⚠️ CALCULATING</div></div>
+        </div>
+
+        <!-- ===== MONTHLY REPORT ===== -->
+        <div class="monthly-report-box">
+            <div class="card-header"><i class="fas fa-chart-line"></i><h3>📊 Monthly Rehabilitation Report</h3></div>
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <div><strong>🎯 Budgeted Savings:</strong> <span id="budgetedSavings">R0</span></div>
+                <div><strong>💰 Actual Savings:</strong> <span id="actualSavings">R0</span></div>
+                <div><strong>📉 Shortfall:</strong> <span id="shortfallAmount">R0</span></div>
+            </div>
+            <div class="carry-over" id="carryOverBox" style="display: none;"><strong>🔄 CARRY-OVER:</strong> <span id="carryOverText"></span></div>
+            <div class="progress-bar"><div class="progress-fill" id="rehabProgress" style="width: 0%;"></div></div>
+            <div id="rehabAdvice" style="font-size: 12px; color: var(--secondary);"></div>
+            <div class="form-group" style="margin-top: 15px;"><label>Set Monthly Savings Target (R)</label><input type="number" id="monthlyTarget" placeholder="R" value="3000"></div>
+            <button class="btn-primary" id="updateReportBtn">Update Monthly Report</button>
+        </div>
+
+        <!-- ===== DAILY SPENDING REPORT ===== -->
+        <div class="glass-card">
+            <div class="card-header"><i class="fas fa-chart-simple"></i><h3>📅 Daily Spending Report</h3></div>
+            <div id="dailyReportList" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
+            <div><strong>📈 Highest spending day:</strong> <span id="highestSpendingDay">No data yet</span></div>
+        </div>
+
+        <!-- ===== TOP MENU ===== -->
+        <div class="top-menu">
+            <button class="menu-btn active" data-section="salary">💰 Salary</button>
+            <button class="menu-btn" data-section="fixed">🏠 Fixed</button>
+            <button class="menu-btn" data-section="wages">💵 Wages</button>
+            <button class="menu-btn" data-section="daily">📅 Daily</button>
+            <button class="menu-btn" data-section="debt">💸 Debt</button>
+            <button class="menu-btn" data-section="borrow">🔄 Borrow</button>
+            <button class="menu-btn" data-section="lend">🤝 Lend</button>
+            <button class="menu-btn" data-section="savings">🎯 Savings</button>
+            <button class="menu-btn" data-section="negotiate">🤝 Negotiate</button>
+            <button class="menu-btn" data-section="rights">📖 Rights</button>
+            <button class="menu-btn" data-section="suggest">💡 Suggest</button>
+            <button class="menu-btn" data-section="about">📋 About</button>
+            <button class="menu-btn" data-section="legal">⚖️ Legal</button>
+        </div>
+
+        <!-- ===== SECTIONS (Keep all sections from original) ===== -->
+        <!-- Salary Section -->
+        <div id="section-salary" class="section active">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-chart-line"></i><h3>Monthly Salary</h3></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Nett Salary (Take-home pay)</label><input type="number" id="nettSalary" placeholder="R" value="15000"></div>
+                    <div class="form-group"><label>Pay Day Date</label><input type="date" id="payDayDate"></div>
+                </div>
+                <button class="btn-primary" id="saveSalaryBtn">Save & Calculate</button>
+            </div>
+        </div>
+
+        <!-- Fixed Expenses Section -->
+        <div id="section-fixed" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-home"></i><h3>Fixed Expenses</h3></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Rent</label><input type="number" id="rent" placeholder="R"></div>
+                    <div class="form-group"><label>Car Installment</label><input type="number" id="carInstall" placeholder="R"></div>
+                    <div class="form-group"><label>Daycare</label><input type="number" id="daycare" placeholder="R"></div>
+                    <div class="form-group"><label>Transport</label><input type="number" id="transport" placeholder="R"></div>
+                    <div class="form-group"><label>Cellphone</label><input type="number" id="cellphone" placeholder="R"></div>
+                    <div class="form-group"><label>WiFi</label><input type="number" id="wifi" placeholder="R"></div>
+                    <div class="form-group"><label>DSTV</label><input type="number" id="dstv" placeholder="R"></div>
+                    <div class="form-group"><label>Clothing Accounts</label><input type="number" id="clothing" placeholder="R"></div>
+                    <div class="form-group"><label>Tuition</label><input type="number" id="tuition" placeholder="R"></div>
+                    <div class="form-group"><label>Car Tracker</label><input type="number" id="tracker" placeholder="R"></div>
+                    <div class="form-group"><label>Insurances</label><input type="number" id="insurances" placeholder="R"></div>
+                    <div class="form-group"><label>Credits</label><input type="number" id="credits" placeholder="R"></div>
+                    <div class="form-group"><label>Medical Aid</label><input type="number" id="medicalAid" placeholder="R"></div>
+                    <div class="form-group"><label>Electricity</label><input type="number" id="electricity" placeholder="R"></div>
+                    <div class="form-group"><label>Water</label><input type="number" id="water" placeholder="R"></div>
+                    <div class="form-group"><label>Grocery</label><input type="number" id="grocery" placeholder="R"></div>
+                    <div class="form-group"><label>Fuel</label><input type="number" id="fuel" placeholder="R"></div>
+                </div>
+                <div class="form-group"><label>Other Fixed Expense</label><input type="text" id="otherFixedName" placeholder="Expense name"><input type="number" id="otherFixedAmount" placeholder="Amount (R)" style="margin-top:5px;"></div>
+                <button class="btn-primary" id="saveFixedBtn">Save Fixed Expenses</button>
+            </div>
+        </div>
+
+        <!-- Wages Section -->
+        <div id="section-wages" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-clock"></i><h3>Wages & Weekly Budgeting</h3></div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">For weekly earners — track your wages, budget weekly, and see your surplus.</p>
+                <div class="form-grid">
+                    <div class="form-group"><label>Weekly Wage (Take-home)</label><input type="number" id="weeklyWage" placeholder="R" value="3500"></div>
+                    <div class="form-group"><label>Weekly Fixed Expenses</label><input type="number" id="weeklyFixed" placeholder="R" value="1500"></div>
+                    <div class="form-group"><label>Weekly Spending Limit</label><input type="number" id="weeklyLimit" placeholder="R" value="800"></div>
+                </div>
+                <button class="btn-primary" id="saveWeeklyBtn">Calculate Weekly Budget</button>
+                <div id="weeklyResult" style="margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px;"></div>
+            </div>
+        </div>
+
+        <!-- Daily Expenses -->
+        <div id="section-daily" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-calendar-day"></i><h3>Daily Expenditures</h3></div>
+                <div class="form-group"><label>Daily Limit</label><input type="number" id="dailyLimit" placeholder="R" value="200"></div>
+                <div id="dailyCategories">
+                    <div class="daily-category"><span>Cigarettes</span><input type="number" id="cat_cigarettes" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Beverages</span><input type="number" id="cat_beverages" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Fast Food</span><input type="number" id="cat_fastfood" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Snacks</span><input type="number" id="cat_snacks" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Lent Money</span><input type="number" id="cat_lent" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Other</span><input type="text" id="cat_other_name" placeholder="Category" style="width:100px;"><input type="number" id="cat_other" placeholder="R" style="width:80px;"></div>
+                </div>
+                <button class="btn-primary" id="addDailyBtn">Update Daily Spending</button>
+                <div id="dailyAlert" style="margin-top: 15px; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.2);"></div>
+            </div>
+        </div>
+
+        <!-- Debt Section -->
+        <div id="section-debt" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-shark"></i><h3>Debt Settlement Plan</h3></div>
+                <div id="debtList"></div>
+                <div class="form-grid">
+                    <div class="form-group"><input type="text" id="debtName" placeholder="Creditor/Lender"></div>
+                    <div class="form-group"><input type="number" id="debtAmount" placeholder="Amount owed (R)"></div>
+                    <div class="form-group"><input type="number" id="debtTerm" placeholder="Term (months)"></div>
+                    <div class="form-group"><select id="debtType"><option value="loan_shark">🦈 Loan Shark</option><option value="bank">🏦 Bank Loan</option><option value="arrears">📋 Account Arrears</option><option value="other">📝 Other</option></select></div>
+                </div>
+                <button class="btn-secondary" id="addDebtBtn">+ Add Debt</button>
+                <div class="progress-bar" style="margin-top: 15px;"><div class="progress-fill" id="debtProgressFill"></div></div>
+                <div id="debtSummary" style="margin-top: 10px; text-align: center; font-size: 12px;"></div>
+            </div>
+        </div>
+
+        <!-- Borrow Section -->
+        <div id="section-borrow" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-hand-holding-usd"></i><h3>Money I Borrowed (Pay Back)</h3></div>
+                <div id="borrowList"></div>
+                <div class="form-grid">
+                    <div class="form-group"><input type="text" id="borrowName" placeholder="From whom?"></div>
+                    <div class="form-group"><input type="number" id="borrowAmount" placeholder="Amount borrowed (R)"></div>
+                    <div class="form-group"><input type="date" id="borrowDue" placeholder="Payback date"></div>
+                </div>
+                <button class="btn-secondary" id="addBorrowBtn">+ Add Borrowed Money</button>
+            </div>
+        </div>
+
+        <!-- Lend Section -->
+        <div id="section-lend" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-hand-holding-heart"></i><h3>Money I Lent (Expect Return)</h3></div>
+                <div id="lendList"></div>
+                <div class="form-grid">
+                    <div class="form-group"><input type="text" id="lendName" placeholder="To whom?"></div>
+                    <div class="form-group"><input type="number" id="lendAmount" placeholder="Amount lent (R)"></div>
+                    <div class="form-group"><input type="date" id="lendDue" placeholder="Expected return date"></div>
+                </div>
+                <button class="btn-secondary" id="addLendBtn">+ Add Lent Money</button>
+            </div>
+        </div>
+
+        <!-- Savings Section -->
+        <div id="section-savings" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-piggy-bank"></i><h3>Savings Goal</h3></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Goal Type</label><select id="goalType"><option>Business</option><option>Car</option><option>House</option><option>Investment</option><option>Wedding</option><option>Travel</option><option>Just Saving</option></select></div>
+                    <div class="form-group"><label>Target Amount (R)</label><input type="number" id="goalTarget" placeholder="R" value="50000"></div>
+                    <div class="form-group"><label>Timeline (months)</label><input type="number" id="goalMonths" placeholder="Months" value="12"></div>
+                </div>
+                <button class="btn-primary" id="calculateGoalBtn">Calculate & Get AI Ideas</button>
+                <div id="savingsResult" style="margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px;"></div>
+                <div id="aiIdeas" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- Negotiation Section -->
+        <div id="section-negotiate" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-microphone-alt"></i><h3>AI Negotiation Simulator</h3></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Debt Amount (R)</label><input type="number" id="negoDebt" value="25000"></div>
+                    <div class="form-group"><label>Monthly Offer (R)</label><input type="number" id="negoOffer" value="1500"></div>
+                    <div class="form-group"><label>Creditor Type</label><select id="negoType"><option>Bank/Creditor</option><option>Loan Shark</option><option>Account Arrears</option></select></div>
+                </div>
+                <div class="sim-chat" id="simChat"><div class="sim-message ai"><strong>AI Creditor:</strong> Hello. You owe R25,000. When can you pay?</div></div>
+                <div class="form-group"><input type="text" id="userResponse" placeholder="Type your response..."></div>
+                <div class="form-grid"><button class="btn-secondary" id="sendResponseBtn">Send</button><button class="btn-danger" id="resetSimBtn">Reset</button><button class="btn-primary" id="exportScriptBtn"><i class="fab fa-whatsapp"></i> Export</button></div>
+                <div id="negoScore" style="margin-top: 15px; text-align: center; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px;"><span id="scoreValue" style="font-size: 24px; font-weight: bold; color: var(--secondary);">0</span>/10 Negotiation Score</div>
+            </div>
+        </div>
+
+        <!-- Rights Section -->
+        <div id="section-rights" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-gavel"></i><h3>Know Your Rights as a Debtor</h3></div>
+                <div class="rights-card"><div class="rights-header"><i class="fas fa-book-open"></i> National Credit Act (NCA)</div><ul class="rights-list"><li>Right to be declared over-indebted</li><li>Right to apply for debt review (Section 86)</li><li>Creditors cannot take legal action during debt review</li></ul></div>
+                <div class="rights-card"><div class="rights-header"><i class="fas fa-user-shield"></i> Your Rights</div><ul class="rights-list"><li>Right to affordable payment — cannot be forced to pay what you cannot afford</li><li>Right to information — creditors must give full debt details</li><li>Right to privacy — no work calls without permission</li></ul></div>
+                <div class="rights-card"><div class="rights-header"><i class="fas fa-ban"></i> Creditors CANNOT</div><ul class="rights-list cant-list"><li>Call before 8am or after 8pm</li><li>Call at work without permission</li><li>Refuse reasonable payment offer (NCA Section 86(11))</li><li>Harass or intimidate you</li></ul></div>
+                <div class="rights-card"><div class="rights-header"><i class="fas fa-phone-alt"></i> Help</div><div class="form-grid"><div><strong>NCR:</strong> 0860 627 627</div><div><strong>Credit Ombud:</strong> 0861 662 837</div><div><strong>Legal Aid SA:</strong> 0800 110 110</div></div></div>
+            </div>
+        </div>
+
+        <!-- Suggestion Box -->
+        <div id="section-suggest" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-lightbulb"></i><h3>💡 Suggestion Box</h3></div>
+                <p style="font-size: 12px; margin-bottom: 15px;">Have an idea to improve SalaryPlan? Found a bug? Let us know.</p>
+                <form name="suggestion" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you">
+                    <input type="hidden" name="form-name" value="suggestion">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Full Name *</label><input type="text" name="name" required placeholder="Your name"></div>
+                        <div class="form-group"><label>Email Address *</label><input type="email" name="email" required placeholder="your@email.com"></div>
+                        <div class="form-group"><label>Phone Number</label><input type="tel" name="phone" placeholder="Optional"></div>
+                    </div>
+                    <div class="form-group"><label>Message / Suggestion *</label><textarea name="message" rows="4" required placeholder="Tell us your idea..."></textarea></div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Submit Suggestion</button>
+                </form>
+                <div id="formSuccessMessage" class="form-success">✅ Thank you! Your suggestion has been submitted.</div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div id="section-about" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-info-circle"></i><h3>About SalaryPlan</h3></div>
+                <div class="about-card">
+                    <div class="version-badge">Version 2.0.0</div>
+                    <p style="margin-bottom: 15px; line-height: 1.6;"><strong>SalaryPlan</strong> is a financial intelligence platform built for South Africans, by South Africans.</p>
+                    <ul class="rights-list" style="margin-bottom: 20px;">
+                        <li>Track your salary and fixed expenses</li>
+                        <li>Manage debt and negotiate with creditors</li>
+                        <li>Save for goals with AI-powered advice</li>
+                        <li>Understand your rights under the National Credit Act</li>
+                    </ul>
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px;">
+                        <span class="cert-badge"><i class="fas fa-shield-alt"></i> POPIA Compliant</span>
+                        <span class="cert-badge"><i class="fas fa-brain"></i> DeepSeek AI</span>
+                        <span class="cert-badge"><i class="fas fa-cloud"></i> Firebase</span>
+                        <span class="cert-badge"><i class="fas fa-mobile-alt"></i> PWA Ready</span>
+                    </div>
+                    <p style="margin-top: 15px;"><strong>Powered by:</strong> MindTech Industries</p>
+                    <p><strong>Contact:</strong> <a href="mailto:salaryplantec@gmail.com" style="color: var(--primary);">salaryplantec@gmail.com</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Section -->
+        <div id="section-legal" class="section">
+            <div class="glass-card">
+                <div class="card-header"><i class="fas fa-gavel"></i><h3>Legal & Privacy</h3></div>
+                <div class="legal-card"><div class="rights-header"><i class="fas fa-lock"></i> Privacy Policy</div>
+                    <p style="font-size: 13px;"><strong>Data Collection:</strong> We collect salary, expense, debt, and contact information you voluntarily provide.</p>
+                    <p style="font-size: 13px;"><strong>Data Use:</strong> We use your data to provide financial planning advice.</p>
+                    <p style="font-size: 13px;"><strong>Data Sharing:</strong> We do not sell your data.</p>
+                    <p style="font-size: 13px;"><strong>Contact:</strong> salaryplantec@gmail.com</p>
+                </div>
+                <div class="legal-card"><div class="rights-header"><i class="fas fa-file-contract"></i> Terms of Service</div>
+                    <p style="font-size: 13px;"><strong>Subscription:</strong> R49/month. Cancel anytime.</p>
+                    <p style="font-size: 13px;"><strong>Not Financial Advice:</strong> Consult a professional for major decisions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BOTTOM LOGOS ===== -->
+        <div class="bottom-logos">
+            <img src="assets/logo/mindtech-logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
+            <img src="assets/logo/mqos-logo.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
+        </div>
+        
+        <!-- ===== FOOTER WITH QUANTUM BADGE ===== -->
+        <div class="footer">
+            <div class="quantum-line">⚛️ CHSH S=2.76 · SA 2026/05142</div>
+            <p>© 2026 SalaryPlan · Built in Africa, for Africa · Powered by MindTech · R49/month</p>
+        </div>
+    </div>
+
+    <!-- ===== EXTERNAL JAVASCRIPT ===== -->
+    <script src="js/app.js"></script>
+    <script src="js/quantum-badge.js"></script>
+    <script src="js/offline-manager.js"></script>
+
+    <!-- ===== FIREBASE CONFIG ===== -->
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw", 
+            authDomain: "mindflow-ai-education.firebaseapp.com", 
+            projectId: "mindflow-ai-education" 
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let userId = localStorage.getItem('salary_user_id');
+        if (!userId) { userId = 'user_' + Date.now(); localStorage.setItem('salary_user_id', userId); }
+
+        const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
+
+        console.log('💰 SalaryPlan v2.0 | PWA Ready');
+        console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
+        console.log('🌍 Built in Africa, for Africa');
+    </script>
+</body>
+</html>
