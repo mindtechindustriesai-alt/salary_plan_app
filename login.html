@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SalaryPlan | Login</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary: #00B4D8;
+            --primary-dark: #0096C7;
+            --secondary: #00F5D4;
+            --dark: #0A0F1A;
+            --glass: rgba(15, 25, 45, 0.6);
+            --glass-border: rgba(0, 180, 216, 0.25);
+        }
+        body {
+            background: var(--dark);
+            color: #E8EDF5;
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .login-container {
+            position: relative;
+            z-index: 1;
+            max-width: 420px;
+            width: 100%;
+            padding: 50px 35px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        .login-logo {
+            max-width: 180px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 16px;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.3));
+        }
+        .login-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        .login-subtitle {
+            font-size: 0.9rem;
+            color: #8A99B0;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            width: 100%;
+            padding: 16px;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Exo 2', sans-serif;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .btn-google:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 180, 216, 0.4);
+        }
+        .btn-google:active {
+            transform: scale(0.97);
+        }
+        .btn-google i {
+            font-size: 1.5rem;
+        }
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .trial-badge {
+            display: inline-block;
+            margin-top: 22px;
+            padding: 10px 24px;
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid var(--secondary);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        .trial-badge i {
+            margin-right: 8px;
+        }
+        .quantum-badge {
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #5A6A80;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+        .quantum-badge .chsh {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .quantum-badge .patent {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+        .africa-text {
+            font-size: 0.7rem;
+            color: #5A6A80;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+        .africa-text i {
+            color: #FFD166;
+            margin-right: 6px;
+        }
+        .error-msg {
+            background: rgba(239, 71, 111, 0.15);
+            border: 1px solid #EF476F;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 12px 0 0;
+            font-size: 0.85rem;
+            color: #EF476F;
+            display: none;
+        }
+        .loading {
+            display: none;
+            margin-top: 16px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        .loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .version-badge {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 0.55rem;
+            color: #4A5A70;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+        .secure-badge {
+            margin-top: 14px;
+            font-size: 0.65rem;
+            color: #4A5A70;
+        }
+        .secure-badge i {
+            color: var(--primary);
+            margin: 0 4px;
+        }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 35px 20px;
+                margin: 20px;
+            }
+            .login-title {
+                font-size: 1.8rem;
+            }
+            .login-logo {
+                max-width: 140px;
+            }
+            .btn-google {
+                font-size: 0.95rem;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="login-container">
+        <div class="version-badge">v2.0</div>
+        
+        <!-- LOGO -->
+        <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="login-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+        
+        <h1 class="login-title">SalaryPlan</h1>
+        <p class="login-subtitle">Your Financial Intelligence</p>
+        
+        <div id="errorMsg" class="error-msg"></div>
+        
+        <!-- GOOGLE SIGN-IN BUTTON -->
+        <button class="btn-google" id="googleLoginBtn">
+            <i class="fab fa-google"></i> Continue with Google
+        </button>
+        
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner"></i> Authenticating...
+        </div>
+        
+        <!-- 7-DAY TRIAL BADGE -->
+        <div class="trial-badge">
+            <i class="fas fa-gem"></i> 7-Day Free Trial · No Credit Card Required
+        </div>
+        
+        <!-- SECURITY BADGE -->
+        <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> Secured by Firebase · <i class="fas fa-lock"></i> Your data is safe
+        </div>
+        
+        <!-- QUANTUM BADGE -->
+        <div class="quantum-badge">
+            ⚛️ <span class="chsh">CHSH S=2.76</span> · <span class="patent">SA 2026/05142</span>
+        </div>
+        
+        <!-- AFRICAN SOVEREIGNTY -->
+        <div class="africa-text">
+            <i class="fas fa-globe-africa"></i> Built in Africa, for Africa
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDKs ===== -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ========== FIREBASE CONFIG ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw",
+            authDomain: "mindflow-ai-education.firebaseapp.com",
+            projectId: "mindflow-ai-education"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ========== DOM ELEMENTS ==========
+        const googleBtn = document.getElementById('googleLoginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // ========== GOOGLE LOGIN FUNCTION ==========
+        async function handleGoogleLogin() {
+            googleBtn.disabled = true;
+            loadingIndicator.style.display = 'block';
+            errorMsg.style.display = 'none';
+
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+
+                console.log('✅ User logged in:', user.uid);
+
+                // Check if user exists in Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+
+                if (userDoc.exists) {
+                    // User exists - redirect to dashboard
+                    console.log('✅ Existing user, redirecting...');
+                    window.location.href = '/index.html';
+                } else {
+                    // New user - create profile with 7-day trial
+                    console.log('🆕 New user, creating profile...');
+                    
+                    const trialEnd = new Date();
+                    trialEnd.setDate(trialEnd.getDate() + 7);
+
+                    const userData = {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName || user.email,
+                        photoURL: user.photoURL || '',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        trialEnd: trialEnd,
+                        trialActive: true,
+                        subscriptionStatus: 'trial',
+                        plan: 'free_trial',
+                        hasCompletedOnboarding: false,
+                        quantumState: {
+                            chsh: 2.76,
+                            patent: 'SA 2026/05142',
+                            observed: false
+                        }
+                    };
+
+                    await db.collection('users').doc(user.uid).set(userData);
+                    console.log('✅ User profile created with 7-day trial!');
+                    
+                    window.location.href = '/index.html';
+                }
+            } catch (error) {
+                console.error('❌ Login error:', error);
+                errorMsg.textContent = 'Login failed: ' + error.message;
+                errorMsg.style.display = 'block';
+                googleBtn.disabled = false;
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // ========== EVENT LISTENER ==========
+        googleBtn.addEventListener('click', handleGoogleLogin);
+
+        // ========== CHECK AUTH STATE ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    if (userDoc.exists) {
+                        window.location.href = '/index.html';
+                    } else {
+                        // Profile missing - recreate it
+                        const trialEnd = new Date();
+                        trialEnd.setDate(trialEnd.getDate() + 7);
+                        await db.collection('users').doc(user.uid).set({
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName || user.email,
+                            photoURL: user.photoURL || '',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            trialEnd: trialEnd,
+                            trialActive: true,
+                            subscriptionStatus: 'trial',
+                            plan: 'free_trial'
+                        });
+                        window.location.href = '/index.html';
+                    }
+                } catch (error) {
+                    console.error('❌ Auth check error:', error);
+                }
+            }
+        });
+
+        // ========== PARTICLES ==========
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 55 },
+                color: { value: ["#00B4D8", "#00F5D4"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2, random: true },
+                size: { value: 2.5, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00B4D8",
+                    opacity: 0.08
+                },
+                move: {
+                    enable: true,
+                    speed: 0.8
+                }
+            },
+            interactivity: {
+                events: {
+                    onhover: { enable: true, mode: "repulse" }
+                }
+            }
+        });
+
+        console.log('💰 SalaryPlan Login Page');
+        console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
+        console.log('🌍 Built in Africa, for Africa');
+    </script>
+</body>
+</html>

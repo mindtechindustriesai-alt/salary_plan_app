@@ -830,3 +830,39 @@
     </script>
 </body>
 </html>
+
+    // ========== AUTH & TRIAL CHECK ==========
+    // Add this after Firebase config, before any other code
+    
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+            window.location.href = '/login.html';
+            return;
+        }
+        
+        try {
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (!userDoc.exists) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            const userData = userDoc.data();
+            const trialEnd = userData.trialEnd?.toDate?.() || new Date(userData.trialEnd);
+            const now = new Date();
+            
+            if (trialEnd && now > trialEnd) {
+                // Trial expired
+                const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
+                alert(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue using SalaryPlan.`);
+                // Redirect to subscription page (if exists)
+                // window.location.href = '/subscribe.html';
+            }
+            
+            console.log(`✅ Welcome ${userData.displayName || 'User'}!`);
+            console.log(`📅 Trial ends: ${trialEnd?.toLocaleDateString()}`);
+            
+        } catch (error) {
+            console.error('❌ User check error:', error);
+        }
+    });
