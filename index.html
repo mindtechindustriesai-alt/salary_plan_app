@@ -345,7 +345,7 @@
         let userId = localStorage.getItem('salary_user_id');
         if (!userId) { userId = 'user_' + Date.now(); localStorage.setItem('salary_user_id', userId); }
 
-        const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
+        const BACKEND_URL = "https://salaryplan-api-v2.onrender.com";
 
         console.log('💰 SalaryPlan v2.0 | PWA Ready');
         console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
@@ -353,3 +353,24 @@
     </script>
 </body>
 </html>
+
+    // ========== LOAD DATA FROM BACKEND ==========
+    async function loadFromBackend() {
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/v1/health`);
+            const data = await response.json();
+            console.log('✅ Backend connected:', data);
+            
+            // Update quantum badge
+            if (data.chsh) {
+                document.querySelector('.quantum-line').innerHTML = `⚛️ CHSH S=${data.chsh} · ${data.patent || 'SA 2026/05142'}`;
+            }
+            return data;
+        } catch (error) {
+            console.log('⚠️ Backend unavailable, using local data');
+            return null;
+        }
+    }
+
+    // Load data on init
+    loadFromBackend();
