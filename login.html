@@ -10,11 +10,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #00B4D8;
             --primary-dark: #0096C7;
@@ -99,17 +95,13 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(0, 180, 216, 0.4);
         }
-        .btn-google:active {
-            transform: scale(0.97);
-        }
-        .btn-google i {
-            font-size: 1.5rem;
-        }
+        .btn-google:active { transform: scale(0.97); }
         .btn-google:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
+        .btn-google i { font-size: 1.5rem; }
         .trial-badge {
             display: inline-block;
             margin-top: 22px;
@@ -121,9 +113,7 @@
             color: var(--secondary);
             font-weight: 500;
         }
-        .trial-badge i {
-            margin-right: 8px;
-        }
+        .trial-badge i { margin-right: 8px; }
         .quantum-badge {
             margin-top: 25px;
             font-size: 0.7rem;
@@ -131,24 +121,15 @@
             font-family: 'Courier New', monospace;
             letter-spacing: 0.5px;
         }
-        .quantum-badge .chsh {
-            color: var(--primary);
-            font-weight: bold;
-        }
-        .quantum-badge .patent {
-            color: var(--secondary);
-            font-weight: bold;
-        }
+        .quantum-badge .chsh { color: var(--primary); font-weight: bold; }
+        .quantum-badge .patent { color: var(--secondary); font-weight: bold; }
         .africa-text {
             font-size: 0.7rem;
             color: #5A6A80;
             margin-top: 12px;
             letter-spacing: 0.5px;
         }
-        .africa-text i {
-            color: #FFD166;
-            margin-right: 6px;
-        }
+        .africa-text i { color: #FFD166; margin-right: 6px; }
         .error-msg {
             background: rgba(239, 71, 111, 0.15);
             border: 1px solid #EF476F;
@@ -165,15 +146,8 @@
             color: var(--secondary);
             font-size: 0.9rem;
         }
-        .loading i {
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+        .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         .version-badge {
             position: absolute;
             top: 16px;
@@ -190,25 +164,12 @@
             font-size: 0.65rem;
             color: #4A5A70;
         }
-        .secure-badge i {
-            color: var(--primary);
-            margin: 0 4px;
-        }
+        .secure-badge i { color: var(--primary); margin: 0 4px; }
         @media (max-width: 480px) {
-            .login-container {
-                padding: 35px 20px;
-                margin: 20px;
-            }
-            .login-title {
-                font-size: 1.8rem;
-            }
-            .login-logo {
-                max-width: 140px;
-            }
-            .btn-google {
-                font-size: 0.95rem;
-                padding: 14px;
-            }
+            .login-container { padding: 35px 20px; margin: 20px; }
+            .login-title { font-size: 1.8rem; }
+            .login-logo { max-width: 140px; }
+            .btn-google { font-size: 0.95rem; padding: 14px; }
         }
     </style>
 </head>
@@ -217,7 +178,6 @@
     <div class="login-container">
         <div class="version-badge">v2.0</div>
         
-        <!-- LOGO -->
         <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="login-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
         
         <h1 class="login-title">SalaryPlan</h1>
@@ -225,7 +185,6 @@
         
         <div id="errorMsg" class="error-msg"></div>
         
-        <!-- GOOGLE SIGN-IN BUTTON -->
         <button class="btn-google" id="googleLoginBtn">
             <i class="fab fa-google"></i> Continue with Google
         </button>
@@ -234,22 +193,18 @@
             <i class="fas fa-spinner"></i> Authenticating...
         </div>
         
-        <!-- 7-DAY TRIAL BADGE -->
         <div class="trial-badge">
             <i class="fas fa-gem"></i> 7-Day Free Trial · No Credit Card Required
         </div>
         
-        <!-- SECURITY BADGE -->
         <div class="secure-badge">
             <i class="fas fa-shield-alt"></i> Secured by Firebase · <i class="fas fa-lock"></i> Your data is safe
         </div>
         
-        <!-- QUANTUM BADGE -->
         <div class="quantum-badge">
             ⚛️ <span class="chsh">CHSH S=2.76</span> · <span class="patent">SA 2026/05142</span>
         </div>
         
-        <!-- AFRICAN SOVEREIGNTY -->
         <div class="africa-text">
             <i class="fas fa-globe-africa"></i> Built in Africa, for Africa
         </div>
@@ -275,9 +230,13 @@
         const googleBtn = document.getElementById('googleLoginBtn');
         const errorMsg = document.getElementById('errorMsg');
         const loadingIndicator = document.getElementById('loadingIndicator');
+        let isProcessing = false;
 
         // ========== GOOGLE LOGIN FUNCTION ==========
         async function handleGoogleLogin() {
+            if (isProcessing) return;
+            isProcessing = true;
+            
             googleBtn.disabled = true;
             loadingIndicator.style.display = 'block';
             errorMsg.style.display = 'none';
@@ -293,11 +252,9 @@
                 const userDoc = await db.collection('users').doc(user.uid).get();
 
                 if (userDoc.exists) {
-                    // User exists - redirect to dashboard
                     console.log('✅ Existing user, redirecting...');
-                    window.location.href = '/index.html';
+                    window.location.replace('/index.html');
                 } else {
-                    // New user - create profile with 7-day trial
                     console.log('🆕 New user, creating profile...');
                     
                     const trialEnd = new Date();
@@ -324,7 +281,7 @@
                     await db.collection('users').doc(user.uid).set(userData);
                     console.log('✅ User profile created with 7-day trial!');
                     
-                    window.location.href = '/index.html';
+                    window.location.replace('/index.html');
                 }
             } catch (error) {
                 console.error('❌ Login error:', error);
@@ -332,19 +289,28 @@
                 errorMsg.style.display = 'block';
                 googleBtn.disabled = false;
                 loadingIndicator.style.display = 'none';
+                isProcessing = false;
             }
         }
 
         // ========== EVENT LISTENER ==========
         googleBtn.addEventListener('click', handleGoogleLogin);
 
-        // ========== CHECK AUTH STATE ==========
+        // ========== CHECK AUTH STATE - STABLE ==========
+        // Use a flag to prevent multiple redirects
+        let authCheckDone = false;
+
         auth.onAuthStateChanged(async (user) => {
+            // Prevent multiple redirects
+            if (authCheckDone) return;
+            
             if (user) {
                 try {
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     if (userDoc.exists) {
-                        window.location.href = '/index.html';
+                        authCheckDone = true;
+                        console.log('✅ User already logged in, redirecting...');
+                        window.location.replace('/index.html');
                     } else {
                         // Profile missing - recreate it
                         const trialEnd = new Date();
@@ -360,11 +326,19 @@
                             subscriptionStatus: 'trial',
                             plan: 'free_trial'
                         });
-                        window.location.href = '/index.html';
+                        authCheckDone = true;
+                        window.location.replace('/index.html');
                     }
                 } catch (error) {
                     console.error('❌ Auth check error:', error);
+                    // Don't redirect on error, let user try again
                 }
+            } else {
+                // User is not logged in - show login page
+                authCheckDone = true;
+                googleBtn.disabled = false;
+                loadingIndicator.style.display = 'none';
+                console.log('🔓 User not logged in, showing login page');
             }
         });
 
