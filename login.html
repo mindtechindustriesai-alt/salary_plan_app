@@ -2,167 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SalaryPlan | Login</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #00B4D8;
-            --secondary: #00F5D4;
-            --dark: #0A0F1A;
-            --glass: rgba(15, 25, 45, 0.85);
-            --glass-border: rgba(0, 180, 216, 0.3);
-        }
         body {
-            background: var(--dark);
+            background: #0A0F1A;
             color: #E8EDF5;
             font-family: 'Exo 2', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .login-container {
-            position: relative;
-            z-index: 1;
+        .login-box {
+            background: rgba(15, 25, 45, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-radius: 32px;
+            padding: 50px 40px;
             max-width: 420px;
             width: 100%;
-            padding: 50px 35px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
             text-align: center;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
         }
-        .login-logo {
-            max-width: 180px;
-            width: 100%;
-            height: auto;
+        .logo {
+            max-width: 160px;
             margin: 0 auto 20px;
             display: block;
-            filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.3));
         }
-        .login-title {
-            font-size: 2.2rem;
+        h1 {
+            font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            background: linear-gradient(135deg, #00F5D4, #00B4D8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
         }
-        .login-subtitle {
-            font-size: 0.9rem;
+        .subtitle {
             color: #8A99B0;
             margin-bottom: 30px;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
         }
         .btn-google {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 14px;
+            gap: 12px;
             width: 100%;
             padding: 16px;
-            background: #ffffff;
+            background: white;
             border: none;
             border-radius: 50px;
-            font-size: 1.05rem;
+            font-size: 1rem;
             font-weight: 600;
             color: #333;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             font-family: 'Exo 2', sans-serif;
         }
         .btn-google:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0, 180, 216, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,180,216,0.3);
         }
-        .btn-google:active { transform: scale(0.97); }
-        .btn-google:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .btn-google i { font-size: 1.5rem; }
         .trial-badge {
-            margin-top: 22px;
-            padding: 10px 24px;
-            background: rgba(0, 255, 136, 0.12);
-            border: 1px solid var(--secondary);
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: rgba(0,255,136,0.12);
+            border: 1px solid #00F5D4;
             border-radius: 50px;
-            font-size: 0.8rem;
-            color: var(--secondary);
-            font-weight: 500;
+            font-size: 0.75rem;
+            color: #00F5D4;
             display: inline-block;
         }
-        .trial-badge i { margin-right: 8px; }
-        .quantum-badge {
-            margin-top: 25px;
+        .quantum {
+            margin-top: 20px;
             font-size: 0.7rem;
             color: #5A6A80;
-            font-family: 'Courier New', monospace;
+            font-family: monospace;
         }
-        .quantum-badge .chsh { color: var(--primary); font-weight: bold; }
-        .quantum-badge .patent { color: var(--secondary); font-weight: bold; }
-        .africa-text {
-            font-size: 0.7rem;
-            color: #5A6A80;
-            margin-top: 12px;
-        }
-        .africa-text i { color: #FFD166; margin-right: 6px; }
-        .error-msg {
-            background: rgba(239, 71, 111, 0.2);
+        .quantum span { color: #00B4D8; font-weight: bold; }
+        .africa { margin-top: 10px; font-size: 0.7rem; color: #5A6A80; }
+        .africa i { color: #FFD166; }
+        .error {
+            background: rgba(239,71,111,0.2);
             border: 1px solid #EF476F;
             border-radius: 12px;
             padding: 12px;
-            margin: 12px 0 0;
-            font-size: 0.85rem;
+            margin: 15px 0;
             color: #EF476F;
             display: none;
+            font-size: 0.85rem;
         }
         .loading {
             display: none;
-            margin-top: 16px;
-            color: var(--secondary);
-            font-size: 0.9rem;
+            margin-top: 15px;
+            color: #00F5D4;
         }
-        .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
+        .loading i { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @media (max-width: 480px) {
-            .login-container { padding: 30px 20px; margin: 20px; }
-            .login-title { font-size: 1.8rem; }
-            .login-logo { max-width: 140px; }
-            .btn-google { font-size: 0.95rem; padding: 14px; }
-        }
     </style>
 </head>
 <body>
-    <div id="particles-js"></div>
-    <div class="login-container">
-        <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="login-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+    <div class="login-box">
+        <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="logo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
         
-        <h1 class="login-title">SalaryPlan</h1>
-        <p class="login-subtitle">Your Financial Intelligence</p>
+        <h1>SalaryPlan</h1>
+        <p class="subtitle">Your Financial Intelligence</p>
         
-        <div id="errorMsg" class="error-msg"></div>
+        <div id="errorMsg" class="error"></div>
         
-        <button class="btn-google" id="googleLoginBtn">
+        <button class="btn-google" id="googleBtn">
             <i class="fab fa-google"></i> Continue with Google
         </button>
         
@@ -171,14 +123,14 @@
         </div>
         
         <div class="trial-badge">
-            <i class="fas fa-gem"></i> 7-Day Free Trial · No Credit Card Required
+            <i class="fas fa-gem"></i> 7-Day Free Trial
         </div>
         
-        <div class="quantum-badge">
-            ⚛️ <span class="chsh">CHSH S=2.76</span> · <span class="patent">SA 2026/05142</span>
+        <div class="quantum">
+            ⚛️ <span>CHSH S=2.76</span> · SA 2026/05142
         </div>
         
-        <div class="africa-text">
+        <div class="africa">
             <i class="fas fa-globe-africa"></i> Built in Africa, for Africa
         </div>
     </div>
@@ -197,15 +149,14 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        const googleBtn = document.getElementById('googleLoginBtn');
+        const googleBtn = document.getElementById('googleBtn');
         const errorMsg = document.getElementById('errorMsg');
         const loadingIndicator = document.getElementById('loadingIndicator');
         let isProcessing = false;
 
-        async function handleGoogleLogin() {
+        googleBtn.addEventListener('click', async () => {
             if (isProcessing) return;
             isProcessing = true;
-            
             googleBtn.disabled = true;
             loadingIndicator.style.display = 'block';
             errorMsg.style.display = 'none';
@@ -215,19 +166,10 @@
                 const result = await auth.signInWithPopup(provider);
                 const user = result.user;
 
-                console.log('✅ User logged in:', user.uid);
-
                 const userDoc = await db.collection('users').doc(user.uid).get();
-
-                if (userDoc.exists) {
-                    console.log('✅ Existing user, redirecting...');
-                    window.location.replace('/index.html');
-                } else {
-                    console.log('🆕 New user, creating profile...');
-                    
+                if (!userDoc.exists) {
                     const trialEnd = new Date();
                     trialEnd.setDate(trialEnd.getDate() + 7);
-
                     await db.collection('users').doc(user.uid).set({
                         uid: user.uid,
                         email: user.email,
@@ -236,27 +178,20 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         trialEnd: trialEnd,
                         trialActive: true,
-                        subscriptionStatus: 'trial',
-                        plan: 'free_trial',
-                        quantumState: { chsh: 2.76, patent: 'SA 2026/05142' }
+                        subscriptionStatus: 'trial'
                     });
-                    
-                    console.log('✅ User profile created!');
-                    window.location.replace('/index.html');
                 }
+                window.location.replace('/index.html');
             } catch (error) {
-                console.error('❌ Login error:', error);
                 errorMsg.textContent = 'Login failed: ' + error.message;
                 errorMsg.style.display = 'block';
                 googleBtn.disabled = false;
                 loadingIndicator.style.display = 'none';
                 isProcessing = false;
             }
-        }
+        });
 
-        googleBtn.addEventListener('click', handleGoogleLogin);
-
-        // Check if already logged in
+        // Auto-redirect if already logged in
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
@@ -264,37 +199,9 @@
                     if (userDoc.exists) {
                         window.location.replace('/index.html');
                     }
-                } catch (e) {
-                    console.error('Auth check error:', e);
-                }
+                } catch (e) {}
             }
         });
-
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 55 },
-                color: { value: ["#00B4D8", "#00F5D4"] },
-                shape: { type: "circle" },
-                opacity: { value: 0.2, random: true },
-                size: { value: 2.5, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#00B4D8",
-                    opacity: 0.08
-                },
-                move: { enable: true, speed: 0.8 }
-            },
-            interactivity: {
-                events: {
-                    onhover: { enable: true, mode: "repulse" }
-                }
-            }
-        });
-
-        console.log('💰 SalaryPlan Login Page');
-        console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
-        console.log('🌍 Built in Africa, for Africa');
     </script>
 </body>
 </html>
