@@ -728,18 +728,21 @@
 
         // ========== DEEPSEEK ==========
         // ========== DEEPSEEK AI - DIRECT API ==========
+        // ========== OPENROUTER AI - FREE TIER ==========
         async function callDeepSeek(prompt) {
             try {
-                console.log("🤖 Calling DeepSeek API...");
+                console.log("🤖 Calling OpenRouter AI...");
                 
-                const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": "Bearer sk-54161f65476a426793b4b8f7c8ab5bfc",
-                        "Content-Type": "application/json"
+                        "Authorization": "Bearer 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",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://salary-plan-app.onrender.com",
+                        "X-Title": "SalaryPlan"
                     },
                     body: JSON.stringify({
-                        model: "deepseek-chat",
+                        model: "deepseek/deepseek-chat:free",
                         messages: [
                             {
                                 role: "system",
@@ -757,17 +760,17 @@
 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error("DeepSeek API error:", response.status, errorText);
+                    console.error("OpenRouter API error:", response.status, errorText);
                     return "⚛️ CHSH S=2.76 quantum intelligence active. AI service is currently busy. Please try again in a moment.";
                 }
 
                 const data = await response.json();
                 const reply = data.choices?.[0]?.message?.content || "AI response not available.";
-                console.log("🤖 DeepSeek reply:", reply);
+                console.log("🤖 OpenRouter reply:", reply);
                 return reply;
 
             } catch (error) {
-                console.error("❌ DeepSeek API error:", error);
+                console.error("❌ OpenRouter API error:", error);
                 return "⚛️ CHSH S=2.76 quantum intelligence active. Network error. Please check your connection and try again.";
             }
         }
