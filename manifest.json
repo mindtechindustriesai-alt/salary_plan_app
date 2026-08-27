@@ -1,0 +1,26 @@
+{
+  "name": "SalaryPlan - Your Financial Intelligence",
+  "short_name": "SalaryPlan",
+  "description": "African financial intelligence platform for salary management, debt settlement, and savings goals.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0F1A",
+  "theme_color": "#00B4D8",
+  "scope": "/",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

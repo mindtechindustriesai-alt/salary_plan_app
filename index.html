@@ -296,7 +296,7 @@
     <div class="container">
         <!-- ===== HEADER ===== -->
         <div class="salary-header">
-            <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+            <img src="https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
             <div class="salary-tagline">YOUR MONEY. YOUR PLAN. YOUR FUTURE.</div>
             <div class="notification-area">
                 <div class="notification-icon" id="notificationIcon" title="Notifications">
@@ -581,8 +581,8 @@
 
         <!-- ===== BOTTOM LOGOS ===== -->
         <div class="bottom-logos">
-            <img src="assets/logo/mindtech-logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
-            <img src="assets/logo/mqos-logo.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
+            <img src="https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
+            <img src="https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
         </div>
         
         <!-- ===== FOOTER ===== -->
@@ -727,17 +727,48 @@
         }
 
         // ========== DEEPSEEK ==========
+        // ========== DEEPSEEK AI - DIRECT API ==========
         async function callDeepSeek(prompt) {
             try {
-                const res = await fetch(`${BACKEND_URL}/api/v1/chat?message=${encodeURIComponent(prompt)}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    return data.response || data.message || "AI service available.";
+                console.log("🤖 Calling DeepSeek API...");
+                
+                const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": "Bearer sk-54161f65476a426793b4b8f7c8ab5bfc",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "deepseek-chat",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are a tough but fair creditor negotiating debt repayment in South Africa. Be realistic, firm but reasonable. Use South African rand (R). Keep responses under 3 sentences."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.8,
+                        max_tokens: 300
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("DeepSeek API error:", response.status, errorText);
+                    return "⚛️ CHSH S=2.76 quantum intelligence active. AI service is currently busy. Please try again in a moment.";
                 }
-                return "AI service available. Try again.";
-            } catch(e) { 
-                console.log('DeepSeek error:', e);
-                return "AI service available. Try again."; 
+
+                const data = await response.json();
+                const reply = data.choices?.[0]?.message?.content || "AI response not available.";
+                console.log("🤖 DeepSeek reply:", reply);
+                return reply;
+
+            } catch (error) {
+                console.error("❌ DeepSeek API error:", error);
+                return "⚛️ CHSH S=2.76 quantum intelligence active. Network error. Please check your connection and try again.";
             }
         }
 
