@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SalaryPlan | Your Financial Intelligence</title>
     
-    <!-- ===== PWA MANIFEST ===== -->
+    <!-- ===== PWA ===== -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#00B4D8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/assets/icons/icon-192x192.png">
     
-    <!-- ===== EXTERNAL FONTS & LIBS ===== -->
+    <!-- ===== FONTS & LIBS ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -31,6 +31,132 @@
                 .catch(err => console.log('❌ SW Error:', err));
         }
     </script>
+    
+    <!-- ===== INLINE CSS (FALLBACK) ===== -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #00B4D8;
+            --primary-dark: #0096C7;
+            --secondary: #00F5D4;
+            --success: #00FF88;
+            --warning: #FFD166;
+            --danger: #EF476F;
+            --dark: #0A0F1A;
+            --glass: rgba(15, 25, 45, 0.45);
+            --glass-border: rgba(0, 180, 216, 0.25);
+        }
+        body { background: var(--dark); color: #E8EDF5; font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        
+        .salary-header { text-align: center; padding: 20px 0; position: relative; }
+        .salary-logo { max-width: 380px; width: 100%; height: auto; filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.5)); transition: all 0.3s; margin: 0 auto; display: block; }
+        .salary-logo:hover { transform: scale(1.02); filter: drop-shadow(0 0 45px rgba(0, 180, 216, 0.7)); }
+        .salary-tagline { font-size: 0.75rem; color: var(--secondary); letter-spacing: 3px; margin-top: 12px; opacity: 0.8; font-family: 'Exo 2', sans-serif; font-weight: 500; }
+        
+        .notification-area { position: absolute; top: 20px; right: 20px; }
+        .notification-icon { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+        .notification-icon:hover { background: rgba(0,180,216,0.3); transform: scale(1.05); }
+        .notification-icon .badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+        .notification-box { position: absolute; top: 55px; right: 0; width: 320px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; display: none; z-index: 100; max-height: 400px; overflow-y: auto; }
+        .notification-box.active { display: block; }
+        .notification-item { padding: 12px; border-bottom: 1px solid var(--glass-border); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .notification-item:hover { background: rgba(0,180,216,0.1); }
+        .notification-item.unread { border-left: 3px solid var(--primary); background: rgba(0,180,216,0.08); }
+        
+        .top-menu { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; margin-top: 10px; }
+        .menu-btn { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s; font-family: 'Exo 2', sans-serif; }
+        .menu-btn:hover, .menu-btn.active { background: rgba(0, 180, 216, 0.3); border-color: var(--primary); color: var(--secondary); transform: translateY(-2px); }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; text-align: center; transition: all 0.3s; }
+        .stat-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+        .stat-value { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--secondary), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Exo 2', sans-serif; }
+        .stat-label { font-size: 0.65rem; color: #8A99B0; margin-top: 5px; font-family: 'Exo 2', sans-serif; font-weight: 500; }
+        .cash-status { font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block; margin-top: 8px; }
+        .status-red { background: rgba(239,71,111,0.2); color: var(--danger); }
+        .status-yellow { background: rgba(255,209,102,0.2); color: var(--warning); }
+        .status-green { background: rgba(0,255,136,0.2); color: var(--success); }
+        
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 20px; transition: all 0.3s; }
+        .glass-card:hover { border-color: var(--primary); }
+        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--glass-border); }
+        .card-header i { font-size: 1.4rem; color: var(--primary); }
+        .card-header h3 { font-size: 1.1rem; font-weight: 600; font-family: 'Exo 2', sans-serif; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 11px; color: var(--secondary); font-weight: 500; font-family: 'Exo 2', sans-serif; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-size: 13px; font-family: 'Exo 2', sans-serif; transition: all 0.3s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0,180,216,0.2); }
+        
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; padding: 14px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; font-family: 'Exo 2', sans-serif; }
+        .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 8px 20px rgba(0,180,216,0.3); }
+        .btn-secondary { background: linear-gradient(135deg, var(--secondary), var(--primary)); border: none; padding: 10px; border-radius: 40px; color: var(--dark); font-weight: 700; cursor: pointer; font-family: 'Exo 2', sans-serif; }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #FF6B4A); border: none; padding: 8px 14px; border-radius: 30px; color: white; font-size: 11px; cursor: pointer; font-family: 'Exo 2', sans-serif; }
+        
+        .debt-item, .borrow-item, .lend-item { background: rgba(0, 0, 0, 0.3); border-radius: 14px; padding: 14px; margin-bottom: 12px; transition: all 0.2s; }
+        .debt-item:hover, .borrow-item:hover, .lend-item:hover { background: rgba(0,180,216,0.1); }
+        .priority-critical { border-left: 4px solid var(--danger); }
+        .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.5s ease; }
+        
+        .daily-category { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
+        .daily-category input { width: 100px; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 10px; color: white; }
+        
+        .sim-chat { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; height: 200px; overflow-y: auto; margin-bottom: 15px; font-size: 12px; }
+        .sim-message { margin-bottom: 10px; padding: 10px 14px; border-radius: 16px; max-width: 85%; }
+        .sim-message.user { background: var(--primary); margin-left: auto; text-align: right; }
+        .sim-message.ai { background: rgba(255,255,255,0.08); border-left: 2px solid var(--secondary); }
+        
+        .rights-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
+        .rights-header { color: var(--secondary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
+        .rights-list { list-style: none; padding-left: 0; }
+        .rights-list li { margin-bottom: 8px; padding-left: 24px; position: relative; font-size: 12px; }
+        .rights-list li:before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
+        .cant-list li:before { content: "✗"; color: var(--danger); }
+        
+        .monthly-report-box { background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(0,245,212,0.05)); border: 1px solid var(--primary); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .carry-over { background: rgba(255,209,102,0.1); border-left: 3px solid var(--warning); padding: 12px; margin: 12px 0; border-radius: 8px; }
+        
+        .bottom-logos { display: flex; justify-content: center; gap: 40px; margin: 30px 0 20px; padding: 20px; background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 60px; }
+        .bottom-logo { height: 40px; width: auto; opacity: 0.7; transition: all 0.3s; }
+        .bottom-logo:hover { opacity: 1; transform: scale(1.05); }
+        
+        .footer { text-align: center; font-size: 0.65rem; color: #8A99B0; padding: 20px; font-family: 'Exo 2', sans-serif; }
+        .footer .quantum-line { font-family: 'Space Mono', monospace; font-size: 0.7rem; margin-bottom: 8px; letter-spacing: 0.5px; }
+        
+        .about-card, .legal-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .version-badge { display: inline-block; background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 11px; margin-bottom: 15px; }
+        .cert-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,180,216,0.15); border: 1px solid var(--glass-border); border-radius: 30px; padding: 6px 14px; font-size: 11px; margin-right: 10px; margin-bottom: 10px; }
+        
+        .form-success { background: rgba(0,255,136,0.15); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 15px; text-align: center; font-size: 13px; display: none; }
+        
+        @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .form-grid { grid-template-columns: 1fr; } .salary-logo { max-width: 260px; } }
+        
+        /* Quantum Badge Style */
+        .quantum-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(10, 15, 26, 0.85);
+            border: 1px solid rgba(0, 180, 216, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: #90E0EF;
+            font-family: 'Courier New', monospace;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .quantum-badge .chsh-value { color: #00B4D8; font-weight: bold; }
+    </style>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -65,7 +191,7 @@
             <div class="carry-over" id="carryOverBox" style="display: none;"><strong>🔄 CARRY-OVER:</strong> <span id="carryOverText"></span></div>
             <div class="progress-bar"><div class="progress-fill" id="rehabProgress" style="width: 0%;"></div></div>
             <div id="rehabAdvice" style="font-size: 12px; color: var(--secondary);"></div>
-            <div class="form-group" style="margin-top: 15px;"><label>Set Monthly Savings Target (R)</label><input type="number" id="monthlyTarget" placeholder="R" value="3000"></div>
+            <div class="form-group"><label>Set Monthly Savings Target (R)</label><input type="number" id="monthlyTarget" value="3000"></div>
             <button class="btn-primary" id="updateReportBtn">Update Monthly Report</button>
         </div>
 
@@ -93,73 +219,72 @@
             <button class="menu-btn" data-section="legal">⚖️ Legal</button>
         </div>
 
-        <!-- ===== SECTIONS (Keep all sections from original) ===== -->
-        <!-- Salary Section -->
+        <!-- ===== SALARY SECTION ===== -->
         <div id="section-salary" class="section active">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-chart-line"></i><h3>Monthly Salary</h3></div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Nett Salary (Take-home pay)</label><input type="number" id="nettSalary" placeholder="R" value="15000"></div>
+                    <div class="form-group"><label>Nett Salary (Take-home pay)</label><input type="number" id="nettSalary" value="15000"></div>
                     <div class="form-group"><label>Pay Day Date</label><input type="date" id="payDayDate"></div>
                 </div>
                 <button class="btn-primary" id="saveSalaryBtn">Save & Calculate</button>
             </div>
         </div>
 
-        <!-- Fixed Expenses Section -->
+        <!-- ===== FIXED EXPENSES ===== -->
         <div id="section-fixed" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-home"></i><h3>Fixed Expenses</h3></div>
                 <div class="form-grid">
-                    <div class="form-group"><label>Rent</label><input type="number" id="rent" placeholder="R"></div>
-                    <div class="form-group"><label>Car Installment</label><input type="number" id="carInstall" placeholder="R"></div>
-                    <div class="form-group"><label>Daycare</label><input type="number" id="daycare" placeholder="R"></div>
-                    <div class="form-group"><label>Transport</label><input type="number" id="transport" placeholder="R"></div>
-                    <div class="form-group"><label>Cellphone</label><input type="number" id="cellphone" placeholder="R"></div>
-                    <div class="form-group"><label>WiFi</label><input type="number" id="wifi" placeholder="R"></div>
-                    <div class="form-group"><label>DSTV</label><input type="number" id="dstv" placeholder="R"></div>
-                    <div class="form-group"><label>Clothing Accounts</label><input type="number" id="clothing" placeholder="R"></div>
-                    <div class="form-group"><label>Tuition</label><input type="number" id="tuition" placeholder="R"></div>
-                    <div class="form-group"><label>Car Tracker</label><input type="number" id="tracker" placeholder="R"></div>
-                    <div class="form-group"><label>Insurances</label><input type="number" id="insurances" placeholder="R"></div>
-                    <div class="form-group"><label>Credits</label><input type="number" id="credits" placeholder="R"></div>
-                    <div class="form-group"><label>Medical Aid</label><input type="number" id="medicalAid" placeholder="R"></div>
-                    <div class="form-group"><label>Electricity</label><input type="number" id="electricity" placeholder="R"></div>
-                    <div class="form-group"><label>Water</label><input type="number" id="water" placeholder="R"></div>
-                    <div class="form-group"><label>Grocery</label><input type="number" id="grocery" placeholder="R"></div>
-                    <div class="form-group"><label>Fuel</label><input type="number" id="fuel" placeholder="R"></div>
+                    <div class="form-group"><label>Rent</label><input type="number" id="rent"></div>
+                    <div class="form-group"><label>Car Installment</label><input type="number" id="carInstall"></div>
+                    <div class="form-group"><label>Daycare</label><input type="number" id="daycare"></div>
+                    <div class="form-group"><label>Transport</label><input type="number" id="transport"></div>
+                    <div class="form-group"><label>Cellphone</label><input type="number" id="cellphone"></div>
+                    <div class="form-group"><label>WiFi</label><input type="number" id="wifi"></div>
+                    <div class="form-group"><label>DSTV</label><input type="number" id="dstv"></div>
+                    <div class="form-group"><label>Clothing Accounts</label><input type="number" id="clothing"></div>
+                    <div class="form-group"><label>Tuition</label><input type="number" id="tuition"></div>
+                    <div class="form-group"><label>Car Tracker</label><input type="number" id="tracker"></div>
+                    <div class="form-group"><label>Insurances</label><input type="number" id="insurances"></div>
+                    <div class="form-group"><label>Credits</label><input type="number" id="credits"></div>
+                    <div class="form-group"><label>Medical Aid</label><input type="number" id="medicalAid"></div>
+                    <div class="form-group"><label>Electricity</label><input type="number" id="electricity"></div>
+                    <div class="form-group"><label>Water</label><input type="number" id="water"></div>
+                    <div class="form-group"><label>Grocery</label><input type="number" id="grocery"></div>
+                    <div class="form-group"><label>Fuel</label><input type="number" id="fuel"></div>
                 </div>
                 <div class="form-group"><label>Other Fixed Expense</label><input type="text" id="otherFixedName" placeholder="Expense name"><input type="number" id="otherFixedAmount" placeholder="Amount (R)" style="margin-top:5px;"></div>
                 <button class="btn-primary" id="saveFixedBtn">Save Fixed Expenses</button>
             </div>
         </div>
 
-        <!-- Wages Section -->
+        <!-- ===== WAGES SECTION ===== -->
         <div id="section-wages" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-clock"></i><h3>Wages & Weekly Budgeting</h3></div>
-                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">For weekly earners — track your wages, budget weekly, and see your surplus.</p>
+                <p style="font-size: 12px; color: #8A99B0; margin-bottom: 15px;">For weekly earners — track your wages, budget weekly, and see your surplus.</p>
                 <div class="form-grid">
-                    <div class="form-group"><label>Weekly Wage (Take-home)</label><input type="number" id="weeklyWage" placeholder="R" value="3500"></div>
-                    <div class="form-group"><label>Weekly Fixed Expenses</label><input type="number" id="weeklyFixed" placeholder="R" value="1500"></div>
-                    <div class="form-group"><label>Weekly Spending Limit</label><input type="number" id="weeklyLimit" placeholder="R" value="800"></div>
+                    <div class="form-group"><label>Weekly Wage (Take-home)</label><input type="number" id="weeklyWage" value="3500"></div>
+                    <div class="form-group"><label>Weekly Fixed Expenses</label><input type="number" id="weeklyFixed" value="1500"></div>
+                    <div class="form-group"><label>Weekly Spending Limit</label><input type="number" id="weeklyLimit" value="800"></div>
                 </div>
                 <button class="btn-primary" id="saveWeeklyBtn">Calculate Weekly Budget</button>
                 <div id="weeklyResult" style="margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px;"></div>
             </div>
         </div>
 
-        <!-- Daily Expenses -->
+        <!-- ===== DAILY EXPENSES ===== -->
         <div id="section-daily" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-calendar-day"></i><h3>Daily Expenditures</h3></div>
-                <div class="form-group"><label>Daily Limit</label><input type="number" id="dailyLimit" placeholder="R" value="200"></div>
+                <div class="form-group"><label>Daily Limit</label><input type="number" id="dailyLimit" value="200"></div>
                 <div id="dailyCategories">
-                    <div class="daily-category"><span>Cigarettes</span><input type="number" id="cat_cigarettes" placeholder="R" value="0"></div>
-                    <div class="daily-category"><span>Beverages</span><input type="number" id="cat_beverages" placeholder="R" value="0"></div>
-                    <div class="daily-category"><span>Fast Food</span><input type="number" id="cat_fastfood" placeholder="R" value="0"></div>
-                    <div class="daily-category"><span>Snacks</span><input type="number" id="cat_snacks" placeholder="R" value="0"></div>
-                    <div class="daily-category"><span>Lent Money</span><input type="number" id="cat_lent" placeholder="R" value="0"></div>
+                    <div class="daily-category"><span>Cigarettes</span><input type="number" id="cat_cigarettes" value="0"></div>
+                    <div class="daily-category"><span>Beverages</span><input type="number" id="cat_beverages" value="0"></div>
+                    <div class="daily-category"><span>Fast Food</span><input type="number" id="cat_fastfood" value="0"></div>
+                    <div class="daily-category"><span>Snacks</span><input type="number" id="cat_snacks" value="0"></div>
+                    <div class="daily-category"><span>Lent Money</span><input type="number" id="cat_lent" value="0"></div>
                     <div class="daily-category"><span>Other</span><input type="text" id="cat_other_name" placeholder="Category" style="width:100px;"><input type="number" id="cat_other" placeholder="R" style="width:80px;"></div>
                 </div>
                 <button class="btn-primary" id="addDailyBtn">Update Daily Spending</button>
@@ -167,7 +292,7 @@
             </div>
         </div>
 
-        <!-- Debt Section -->
+        <!-- ===== DEBT SECTION ===== -->
         <div id="section-debt" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-shark"></i><h3>Debt Settlement Plan</h3></div>
@@ -184,7 +309,7 @@
             </div>
         </div>
 
-        <!-- Borrow Section -->
+        <!-- ===== BORROW SECTION ===== -->
         <div id="section-borrow" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-hand-holding-usd"></i><h3>Money I Borrowed (Pay Back)</h3></div>
@@ -192,13 +317,13 @@
                 <div class="form-grid">
                     <div class="form-group"><input type="text" id="borrowName" placeholder="From whom?"></div>
                     <div class="form-group"><input type="number" id="borrowAmount" placeholder="Amount borrowed (R)"></div>
-                    <div class="form-group"><input type="date" id="borrowDue" placeholder="Payback date"></div>
+                    <div class="form-group"><input type="date" id="borrowDue"></div>
                 </div>
                 <button class="btn-secondary" id="addBorrowBtn">+ Add Borrowed Money</button>
             </div>
         </div>
 
-        <!-- Lend Section -->
+        <!-- ===== LEND SECTION ===== -->
         <div id="section-lend" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-hand-holding-heart"></i><h3>Money I Lent (Expect Return)</h3></div>
@@ -206,20 +331,20 @@
                 <div class="form-grid">
                     <div class="form-group"><input type="text" id="lendName" placeholder="To whom?"></div>
                     <div class="form-group"><input type="number" id="lendAmount" placeholder="Amount lent (R)"></div>
-                    <div class="form-group"><input type="date" id="lendDue" placeholder="Expected return date"></div>
+                    <div class="form-group"><input type="date" id="lendDue"></div>
                 </div>
                 <button class="btn-secondary" id="addLendBtn">+ Add Lent Money</button>
             </div>
         </div>
 
-        <!-- Savings Section -->
+        <!-- ===== SAVINGS SECTION ===== -->
         <div id="section-savings" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-piggy-bank"></i><h3>Savings Goal</h3></div>
                 <div class="form-grid">
                     <div class="form-group"><label>Goal Type</label><select id="goalType"><option>Business</option><option>Car</option><option>House</option><option>Investment</option><option>Wedding</option><option>Travel</option><option>Just Saving</option></select></div>
-                    <div class="form-group"><label>Target Amount (R)</label><input type="number" id="goalTarget" placeholder="R" value="50000"></div>
-                    <div class="form-group"><label>Timeline (months)</label><input type="number" id="goalMonths" placeholder="Months" value="12"></div>
+                    <div class="form-group"><label>Target Amount (R)</label><input type="number" id="goalTarget" value="50000"></div>
+                    <div class="form-group"><label>Timeline (months)</label><input type="number" id="goalMonths" value="12"></div>
                 </div>
                 <button class="btn-primary" id="calculateGoalBtn">Calculate & Get AI Ideas</button>
                 <div id="savingsResult" style="margin-top: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px;"></div>
@@ -227,7 +352,7 @@
             </div>
         </div>
 
-        <!-- Negotiation Section -->
+        <!-- ===== NEGOTIATION SECTION ===== -->
         <div id="section-negotiate" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-microphone-alt"></i><h3>AI Negotiation Simulator</h3></div>
@@ -243,7 +368,7 @@
             </div>
         </div>
 
-        <!-- Rights Section -->
+        <!-- ===== RIGHTS SECTION ===== -->
         <div id="section-rights" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-gavel"></i><h3>Know Your Rights as a Debtor</h3></div>
@@ -254,7 +379,7 @@
             </div>
         </div>
 
-        <!-- Suggestion Box -->
+        <!-- ===== SUGGESTION BOX ===== -->
         <div id="section-suggest" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-lightbulb"></i><h3>💡 Suggestion Box</h3></div>
@@ -273,20 +398,20 @@
             </div>
         </div>
 
-        <!-- About Section -->
+        <!-- ===== ABOUT SECTION ===== -->
         <div id="section-about" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-info-circle"></i><h3>About SalaryPlan</h3></div>
                 <div class="about-card">
                     <div class="version-badge">Version 2.0.0</div>
-                    <p style="margin-bottom: 15px; line-height: 1.6;"><strong>SalaryPlan</strong> is a financial intelligence platform built for South Africans, by South Africans.</p>
-                    <ul class="rights-list" style="margin-bottom: 20px;">
+                    <p><strong>SalaryPlan</strong> is a financial intelligence platform built for South Africans, by South Africans.</p>
+                    <ul class="rights-list">
                         <li>Track your salary and fixed expenses</li>
                         <li>Manage debt and negotiate with creditors</li>
                         <li>Save for goals with AI-powered advice</li>
                         <li>Understand your rights under the National Credit Act</li>
                     </ul>
-                    <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px;">
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-top: 15px;">
                         <span class="cert-badge"><i class="fas fa-shield-alt"></i> POPIA Compliant</span>
                         <span class="cert-badge"><i class="fas fa-brain"></i> DeepSeek AI</span>
                         <span class="cert-badge"><i class="fas fa-cloud"></i> Firebase</span>
@@ -298,17 +423,19 @@
             </div>
         </div>
 
-        <!-- Legal Section -->
+        <!-- ===== LEGAL SECTION ===== -->
         <div id="section-legal" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-gavel"></i><h3>Legal & Privacy</h3></div>
-                <div class="legal-card"><div class="rights-header"><i class="fas fa-lock"></i> Privacy Policy</div>
+                <div class="legal-card">
+                    <div class="rights-header"><i class="fas fa-lock"></i> Privacy Policy</div>
                     <p style="font-size: 13px;"><strong>Data Collection:</strong> We collect salary, expense, debt, and contact information you voluntarily provide.</p>
                     <p style="font-size: 13px;"><strong>Data Use:</strong> We use your data to provide financial planning advice.</p>
                     <p style="font-size: 13px;"><strong>Data Sharing:</strong> We do not sell your data.</p>
                     <p style="font-size: 13px;"><strong>Contact:</strong> salaryplantec@gmail.com</p>
                 </div>
-                <div class="legal-card"><div class="rights-header"><i class="fas fa-file-contract"></i> Terms of Service</div>
+                <div class="legal-card">
+                    <div class="rights-header"><i class="fas fa-file-contract"></i> Terms of Service</div>
                     <p style="font-size: 13px;"><strong>Subscription:</strong> R49/month. Cancel anytime.</p>
                     <p style="font-size: 13px;"><strong>Not Financial Advice:</strong> Consult a professional for major decisions.</p>
                 </div>
@@ -333,8 +460,9 @@
     <script src="js/quantum-badge.js"></script>
     <script src="js/offline-manager.js"></script>
 
-    <!-- ===== FIREBASE CONFIG ===== -->
+    <!-- ===== MAIN APP SCRIPT ===== -->
     <script>
+        // ========== FIREBASE CONFIG ==========
         const firebaseConfig = { 
             apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw", 
             authDomain: "mindflow-ai-education.firebaseapp.com", 
@@ -345,32 +473,360 @@
         let userId = localStorage.getItem('salary_user_id');
         if (!userId) { userId = 'user_' + Date.now(); localStorage.setItem('salary_user_id', userId); }
 
-        const BACKEND_URL = "https://salaryplan-api-v2.onrender.com";
+        // ========== BACKEND URL ==========
+        const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
 
-        console.log('💰 SalaryPlan v2.0 | PWA Ready');
+        // ========== LOAD DATA FROM BACKEND ==========
+        async function loadFromBackend() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/v1/health`);
+                const data = await response.json();
+                console.log('✅ Backend connected:', data);
+                
+                // Update quantum badge
+                if (data.chsh) {
+                    const quantumLine = document.querySelector('.quantum-line');
+                    if (quantumLine) {
+                        quantumLine.innerHTML = `⚛️ CHSH S=${data.chsh} · ${data.patent || 'SA 2026/05142'}`;
+                    }
+                }
+                return data;
+            } catch (error) {
+                console.log('⚠️ Backend unavailable, using local data');
+                return null;
+            }
+        }
+
+        // ========== DEEPSEEK AI ==========
+        const DEEPSEEK_KEY = "sk-54161f65476a426793b4b8f7c8ab5bfc";
+        async function callDeepSeek(prompt) {
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/v1/chat?message=${encodeURIComponent(prompt)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    return data.response || data.message || "AI service available.";
+                }
+                return "AI service available. Try again.";
+            } catch(e) { 
+                console.log('DeepSeek error:', e);
+                return "AI service available. Try again."; 
+            }
+        }
+
+        // ========== NAVIGATION ==========
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`section-${btn.dataset.section}`).classList.add('active');
+            });
+        });
+
+        // ========== NOTIFICATIONS ==========
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationBox = document.getElementById('notificationBox');
+        notificationIcon.addEventListener('click', (e) => { e.stopPropagation(); notificationBox.classList.toggle('active'); });
+        document.addEventListener('click', () => notificationBox.classList.remove('active'));
+        function addNotification(msg) {
+            const box = document.getElementById('notificationBox');
+            const notif = document.createElement('div');
+            notif.className = 'notification-item unread';
+            notif.innerHTML = msg;
+            notif.onclick = () => { notif.classList.remove('unread'); updateBadge(); };
+            box.insertBefore(notif, box.firstChild);
+            updateBadge();
+            if(Notification.permission === 'granted') new Notification('SalaryPlan', { body: msg });
+        }
+        function updateBadge() { let unread = document.querySelectorAll('.notification-item.unread').length; document.getElementById('notificationBadge').innerText = unread; }
+
+        // ========== DATA ==========
+        let debts = [], borrows = [], lends = [], dailySpendingHistory = [];
+
+        // ========== UPDATE ALL ==========
+        function updateAll() {
+            let salary = parseFloat(document.getElementById('nettSalary').value) || 0;
+            document.getElementById('nettDisplay').innerText = `R${salary.toFixed(0)}`;
+            let fixedTotal = ['rent','carInstall','daycare','transport','cellphone','wifi','dstv','clothing','tuition','tracker','insurances','credits','medicalAid','electricity','water','grocery','fuel']
+                .reduce((sum, id) => sum + (parseFloat(document.getElementById(id).value) || 0), 0);
+            let otherFixedAmount = parseFloat(document.getElementById('otherFixedAmount').value) || 0;
+            if(otherFixedAmount) fixedTotal += otherFixedAmount;
+            document.getElementById('totalFixedDisplay').innerText = `R${fixedTotal.toFixed(0)}`;
+            let remaining = salary - fixedTotal;
+            document.getElementById('remainingDisplay').innerText = `R${Math.max(0, remaining).toFixed(0)}`;
+            let totalDebt = debts.reduce((sum, d) => sum + d.amount, 0);
+            let paid = debts.reduce((sum, d) => sum + (d.paid || 0), 0);
+            let debtRemaining = totalDebt - paid;
+            let totalBorrowed = borrows.reduce((sum, b) => sum + b.amount, 0);
+            let surplus = remaining - debtRemaining - totalBorrowed;
+            document.getElementById('debtRemainingDisplay').innerText = `R${debtRemaining.toFixed(0)}`;
+            const surplusElement = document.getElementById('surplusDisplay');
+            surplusElement.innerText = surplus >= 0 ? `R${surplus.toFixed(0)}` : `-R${Math.abs(surplus).toFixed(0)}`;
+            
+            const cashStatus = document.getElementById('cashStatus');
+            if(surplus <= 0) { cashStatus.className = 'cash-status status-red'; cashStatus.innerHTML = '🔴 CRITICAL - No Savings'; }
+            else if(surplus < 500) { cashStatus.className = 'cash-status status-yellow'; cashStatus.innerHTML = '🟡 FAIR - Build Savings'; }
+            else { cashStatus.className = 'cash-status status-green'; cashStatus.innerHTML = '🟢 GOOD - You are Saving!'; }
+            
+            let percent = totalDebt > 0 ? ((totalDebt - debtRemaining) / totalDebt * 100) : 0;
+            document.getElementById('debtProgressFill').style.width = `${percent}%`;
+            document.getElementById('debtSummary').innerHTML = `💰 Total: R${totalDebt.toFixed(0)} | ✅ Paid: R${paid.toFixed(0)} | ⚠️ Remaining: R${debtRemaining.toFixed(0)} | 📊 ${percent.toFixed(0)}% paid`;
+            
+            let payDay = document.getElementById('payDayDate').value;
+            if(payDay) {
+                let today = new Date();
+                let payDayDate = new Date(payDay);
+                if(today.getDate() === payDayDate.getDate()) addNotification(`💰 Pay Day today! Salary of R${salary.toFixed(0)} should be deposited.`);
+            }
+            updateMonthlyReport();
+            updateWeeklyBudget();
+        }
+
+        // ========== WEEKLY BUDGET ==========
+        function updateWeeklyBudget() {
+            const weeklyWage = parseFloat(document.getElementById('weeklyWage').value) || 0;
+            const weeklyFixed = parseFloat(document.getElementById('weeklyFixed').value) || 0;
+            const weeklyLimit = parseFloat(document.getElementById('weeklyLimit').value) || 0;
+            const weeklyRemaining = weeklyWage - weeklyFixed;
+            const weeklySurplus = weeklyRemaining - weeklyLimit;
+            const resultDiv = document.getElementById('weeklyResult');
+            if (resultDiv) {
+                resultDiv.innerHTML = `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                            <div style="font-size:0.7rem; color:#8A99B0;">Weekly Wage</div>
+                            <div style="font-size:1.4rem; font-weight:700; color:var(--primary);">R${weeklyWage.toFixed(2)}</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                            <div style="font-size:0.7rem; color:#8A99B0;">Weekly Fixed</div>
+                            <div style="font-size:1.4rem; font-weight:700; color:var(--warning);">R${weeklyFixed.toFixed(2)}</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                            <div style="font-size:0.7rem; color:#8A99B0;">Weekly Remaining</div>
+                            <div style="font-size:1.4rem; font-weight:700; color:var(--secondary);">R${weeklyRemaining.toFixed(2)}</div>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; text-align:center;">
+                            <div style="font-size:0.7rem; color:#8A99B0;">Weekly Spending Limit</div>
+                            <div style="font-size:1.4rem; font-weight:700; color:${weeklySurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">R${weeklyLimit.toFixed(2)}</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px; text-align:center; font-size:1.1rem; font-weight:600; color:${weeklySurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                        ${weeklySurplus >= 0 ? `✅ Weekly Surplus: R${weeklySurplus.toFixed(2)}` : `⚠️ Weekly Shortfall: R${Math.abs(weeklySurplus).toFixed(2)}`}
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('saveWeeklyBtn')?.addEventListener('click', updateWeeklyBudget);
+
+        // ========== MONTHLY REPORT ==========
+        function updateMonthlyReport() {
+            let monthlyTarget = parseFloat(document.getElementById('monthlyTarget').value) || 3000;
+            let surplusText = document.getElementById('surplusDisplay').innerText;
+            let surplus = parseFloat(surplusText.replace('R', '')) || 0;
+            if(surplusText.includes('-')) surplus = 0;
+            let shortfall = Math.max(0, monthlyTarget - surplus);
+            document.getElementById('budgetedSavings').innerHTML = `R${monthlyTarget.toFixed(0)}`;
+            document.getElementById('actualSavings').innerHTML = `R${surplus.toFixed(0)}`;
+            document.getElementById('shortfallAmount').innerHTML = `R${shortfall.toFixed(0)}`;
+            let percentComplete = Math.min(100, (surplus / monthlyTarget) * 100);
+            document.getElementById('rehabProgress').style.width = `${percentComplete}%`;
+            if(shortfall > 0) {
+                document.getElementById('carryOverBox').style.display = 'block';
+                document.getElementById('carryOverText').innerHTML = `You were R${shortfall.toFixed(0)} short. Next month's target: R${(monthlyTarget + shortfall).toFixed(0)}.`;
+            } else { document.getElementById('carryOverBox').style.display = 'none'; }
+            callDeepSeek(`User saved R${surplus} vs target R${monthlyTarget}. Shortfall R${shortfall}. Give 1 sentence of practical advice.`).then(advice => {
+                document.getElementById('rehabAdvice').innerHTML = `💡 ${advice}`;
+            });
+        }
+
+        // ========== DAILY REPORT ==========
+        function updateDailyReport() {
+            if(dailySpendingHistory.length === 0) { document.getElementById('dailyReportList').innerHTML = '<p>No daily spending recorded yet.</p>'; return; }
+            let sorted = [...dailySpendingHistory].sort((a,b) => b.total - a.total);
+            let highest = sorted[0];
+            document.getElementById('highestSpendingDay').innerHTML = `${highest.date}: R${highest.total}`;
+            document.getElementById('dailyReportList').innerHTML = dailySpendingHistory.slice(-7).map(d => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><span>📅 ${d.date}</span><span>💰 R${d.total}</span></div>`).join('');
+        }
+
+        // ========== DEBT FUNCTIONS ==========
+        function renderDebts() {
+            const container = document.getElementById('debtList');
+            if (!container) return;
+            container.innerHTML = '';
+            debts.forEach((debt, idx) => {
+                const paidPercent = debt.amount > 0 ? ((debt.paid || 0) / debt.amount * 100).toFixed(0) : 0;
+                container.innerHTML += `<div class="debt-item"><div><strong>${debt.name}</strong> - R${debt.amount.toFixed(0)} (${debt.term || '?'} months)</div><div class="progress-bar"><div class="progress-fill" style="width:${paidPercent}%;"></div></div><div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;"><span>Paid: R${(debt.paid || 0).toFixed(0)}</span><input type="number" id="payment_${idx}" placeholder="Payment" style="width:100px; padding:5px;"><button class="btn-danger" style="padding:5px 10px;" onclick="makePayment(${idx})">Pay</button><button class="btn-danger" style="padding:5px 10px;" onclick="deleteDebt(${idx})">Delete</button></div></div>`;
+            });
+            updateAll();
+        }
+
+        window.makePayment = function(idx) {
+            let payment = parseFloat(document.getElementById(`payment_${idx}`).value) || 0;
+            if(payment > 0) { debts[idx].paid = (debts[idx].paid || 0) + payment; renderDebts(); saveDebts(); updateAll(); addNotification(`💰 Payment of R${payment} made to ${debts[idx].name}`); }
+        };
+        window.deleteDebt = function(idx) { debts.splice(idx,1); renderDebts(); saveDebts(); };
+
+        function saveDebts() { db.collection('debts').doc(userId).set({ debts, updatedAt: new Date() }); }
+        async function loadDebts() { const doc = await db.collection('debts').doc(userId).get(); if(doc.exists) { debts = doc.data().debts || []; renderDebts(); } }
+
+        document.getElementById('addDebtBtn')?.addEventListener('click', () => {
+            let name = document.getElementById('debtName').value;
+            let amount = parseFloat(document.getElementById('debtAmount').value);
+            let term = parseInt(document.getElementById('debtTerm').value);
+            if(name && amount) { debts.push({ name, amount, term, paid: 0 }); renderDebts(); saveDebts(); document.getElementById('debtName').value = ''; document.getElementById('debtAmount').value = ''; document.getElementById('debtTerm').value = ''; }
+        });
+
+        // ========== BORROW FUNCTIONS ==========
+        function renderBorrows() {
+            const container = document.getElementById('borrowList');
+            if(!container) return;
+            container.innerHTML = '';
+            borrows.forEach((b, idx) => {
+                container.innerHTML += `<div class="borrow-item"><div><strong>Owe ${b.name}</strong> - R${b.amount}</div><div style="font-size:11px;">Due: ${b.due || 'No date'}</div><button class="btn-danger" style="padding:5px 10px;" onclick="deleteBorrow(${idx})">Paid / Delete</button></div>`;
+            });
+            updateAll();
+        }
+        window.deleteBorrow = function(idx) { borrows.splice(idx,1); renderBorrows(); saveBorrows(); updateAll(); };
+        function saveBorrows() { db.collection('borrows').doc(userId).set({ borrows, updatedAt: new Date() }); }
+        async function loadBorrows() { const doc = await db.collection('borrows').doc(userId).get(); if(doc.exists) { borrows = doc.data().borrows || []; renderBorrows(); } }
+        document.getElementById('addBorrowBtn')?.addEventListener('click', () => {
+            let name = document.getElementById('borrowName').value;
+            let amount = parseFloat(document.getElementById('borrowAmount').value);
+            let due = document.getElementById('borrowDue').value;
+            if(name && amount) { borrows.push({ name, amount, due }); renderBorrows(); saveBorrows(); updateAll(); document.getElementById('borrowName').value = ''; document.getElementById('borrowAmount').value = ''; document.getElementById('borrowDue').value = ''; addNotification(`📝 Added borrowed money: R${amount} from ${name}`); }
+        });
+
+        // ========== LEND FUNCTIONS ==========
+        function renderLends() {
+            const container = document.getElementById('lendList');
+            if(!container) return;
+            container.innerHTML = '';
+            lends.forEach((l, idx) => {
+                container.innerHTML += `<div class="lend-item"><div><strong>${l.name} owes you</strong> - R${l.amount}</div><div style="font-size:11px;">Expected: ${l.due || 'No date'}</div><button class="btn-danger" style="padding:5px 10px;" onclick="deleteLend(${idx})">Received / Delete</button></div>`;
+            });
+        }
+        window.deleteLend = function(idx) { lends.splice(idx,1); renderLends(); saveLends(); };
+        function saveLends() { db.collection('lends').doc(userId).set({ lends, updatedAt: new Date() }); }
+        async function loadLends() { const doc = await db.collection('lends').doc(userId).get(); if(doc.exists) { lends = doc.data().lends || []; renderLends(); } }
+        document.getElementById('addLendBtn')?.addEventListener('click', () => {
+            let name = document.getElementById('lendName').value;
+            let amount = parseFloat(document.getElementById('lendAmount').value);
+            let due = document.getElementById('lendDue').value;
+            if(name && amount) { lends.push({ name, amount, due }); renderLends(); saveLends(); document.getElementById('lendName').value = ''; document.getElementById('lendAmount').value = ''; document.getElementById('lendDue').value = ''; addNotification(`📝 Lent money: R${amount} to ${name}`); }
+        });
+
+        // ========== DAILY SPENDING ==========
+        document.getElementById('addDailyBtn')?.addEventListener('click', () => {
+            let cigarettes = parseFloat(document.getElementById('cat_cigarettes').value) || 0;
+            let beverages = parseFloat(document.getElementById('cat_beverages').value) || 0;
+            let fastfood = parseFloat(document.getElementById('cat_fastfood').value) || 0;
+            let snacks = parseFloat(document.getElementById('cat_snacks').value) || 0;
+            let lent = parseFloat(document.getElementById('cat_lent').value) || 0;
+            let other = parseFloat(document.getElementById('cat_other').value) || 0;
+            let total = cigarettes + beverages + fastfood + snacks + lent + other;
+            let limit = parseFloat(document.getElementById('dailyLimit').value) || 200;
+            let date = new Date().toLocaleDateString();
+            dailySpendingHistory.push({ date, total });
+            updateDailyReport();
+            let alertDiv = document.getElementById('dailyAlert');
+            if(total > limit) alertDiv.innerHTML = `⚠️ EXCEEDED! Daily limit R${limit}. Total: R${total}. Try to reduce tomorrow.`;
+            else if(total > limit * 0.8) alertDiv.innerHTML = `⚠️ Warning: ${Math.round(total/limit*100)}% of daily limit.`;
+            else alertDiv.innerHTML = `✅ You have R${(limit - total).toFixed(0)} left today.`;
+            addNotification(`📅 Daily spending recorded: R${total}`);
+        });
+
+        // ========== SAVINGS GOAL ==========
+        document.getElementById('calculateGoalBtn')?.addEventListener('click', async () => {
+            let target = parseFloat(document.getElementById('goalTarget').value) || 0;
+            let months = parseFloat(document.getElementById('goalMonths').value) || 1;
+            let monthly = target / months;
+            let surplus = parseFloat(document.getElementById('surplusDisplay').innerText.replace('R', '')) || 0;
+            let advice = monthly > surplus ? `⚠️ Need R${monthly.toFixed(0)}/month, only have R${surplus.toFixed(0)} surplus.` : `✅ Achievable! Save R${monthly.toFixed(0)}/month.`;
+            document.getElementById('savingsResult').innerHTML = `<strong>${document.getElementById('goalType').value}</strong><br>Target: R${target} in ${months} months<br>Monthly: R${monthly.toFixed(0)}<br>${advice}`;
+            let aiIdeas = await callDeepSeek(`Generate 4 business ideas for someone in South Africa saving R${target} over ${months} months. Be practical.`);
+            document.getElementById('aiIdeas').innerHTML = `<div class="card-header"><i class="fas fa-lightbulb"></i><h3>🤖 AI Business Ideas</h3></div><div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:12px;">${aiIdeas.replace(/\n/g, '<br>')}</div>`;
+        });
+
+        document.getElementById('saveSalaryBtn')?.addEventListener('click', updateAll);
+        document.getElementById('saveFixedBtn')?.addEventListener('click', updateAll);
+        document.getElementById('updateReportBtn')?.addEventListener('click', updateMonthlyReport);
+
+        // ========== NEGOTIATION SIMULATOR ==========
+        let simDebt = 25000, simOffer = 1500;
+        function addSimMessage(sender, text) {
+            let chat = document.getElementById('simChat');
+            let div = document.createElement('div');
+            div.className = `sim-message ${sender}`;
+            div.innerHTML = `<strong>${sender === 'user' ? 'You' : 'AI Creditor'}:</strong><br>${text}`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        document.getElementById('sendResponseBtn')?.addEventListener('click', async () => {
+            let response = document.getElementById('userResponse').value;
+            if(!response) return;
+            addSimMessage('user', response);
+            document.getElementById('userResponse').value = '';
+            let aiReply = await callDeepSeek(`You are a tough ${document.getElementById('negoType').value}. User owes R${simDebt}. User says: "${response}". Respond realistically.`);
+            addSimMessage('ai', aiReply);
+            let score = Math.min(10, Math.floor(simOffer / simDebt * 100) + (response.length > 20 ? 2 : 0));
+            document.getElementById('scoreValue').innerText = score;
+        });
+        document.getElementById('resetSimBtn')?.addEventListener('click', () => {
+            document.getElementById('simChat').innerHTML = '<div class="sim-message ai"><strong>AI Creditor:</strong> Hello. You owe R25,000. When can you pay?</div>';
+            simDebt = parseFloat(document.getElementById('negoDebt').value) || 25000;
+            simOffer = parseFloat(document.getElementById('negoOffer').value) || 1500;
+            document.getElementById('scoreValue').innerText = '0';
+        });
+        document.getElementById('exportScriptBtn')?.addEventListener('click', () => {
+            let offer = document.getElementById('negoOffer').value;
+            let msg = `Hello. I can pay R${offer}/month. Please confirm.`;
+            navigator.clipboard?.writeText(msg);
+            alert("✅ WhatsApp script copied!");
+        });
+        document.getElementById('negoDebt')?.addEventListener('change', (e) => { simDebt = parseFloat(e.target.value) || 25000; });
+        document.getElementById('negoOffer')?.addEventListener('change', (e) => { simOffer = parseFloat(e.target.value) || 1500; });
+
+        // ========== SUGGESTION FORM ==========
+        const suggestionForm = document.querySelector('form[name="suggestion"]');
+        const formSuccessMessage = document.getElementById('formSuccessMessage');
+        if (suggestionForm) {
+            suggestionForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(suggestionForm);
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                })
+                .then(() => {
+                    suggestionForm.reset();
+                    formSuccessMessage.style.display = 'block';
+                    setTimeout(() => { formSuccessMessage.style.display = 'none'; }, 5000);
+                    addNotification('💡 Thank you for your suggestion!');
+                })
+                .catch(error => {
+                    console.error('Form submission error:', error);
+                    alert('There was an error submitting your suggestion. Please try again or email us directly.');
+                });
+            });
+        }
+
+        // ========== INIT ==========
+        if(Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
+        loadDebts(); loadBorrows(); loadLends(); updateAll(); updateWeeklyBudget();
+
+        // Load backend data on init
+        document.addEventListener('DOMContentLoaded', loadFromBackend);
+
+        particlesJS('particles-js', {
+            particles: { number: { value: 55 }, color: { value: ["#00B4D8", "#00F5D4"] }, shape: { type: "circle" }, opacity: { value: 0.2, random: true }, size: { value: 2.5, random: true }, line_linked: { enable: true, distance: 150, color: "#00B4D8", opacity: 0.08 }, move: { enable: true, speed: 0.8 } },
+            interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+        });
+
+        console.log('💰 SalaryPlan v2.1 | Backend URL:', BACKEND_URL);
         console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
         console.log('🌍 Built in Africa, for Africa');
     </script>
 </body>
 </html>
-
-    // ========== LOAD DATA FROM BACKEND ==========
-    async function loadFromBackend() {
-        try {
-            const response = await fetch(`${BACKEND_URL}/api/v1/health`);
-            const data = await response.json();
-            console.log('✅ Backend connected:', data);
-            
-            // Update quantum badge
-            if (data.chsh) {
-                document.querySelector('.quantum-line').innerHTML = `⚛️ CHSH S=${data.chsh} · ${data.patent || 'SA 2026/05142'}`;
-            }
-            return data;
-        } catch (error) {
-            console.log('⚠️ Backend unavailable, using local data');
-            return null;
-        }
-    }
-
-    // Load data on init
-    loadFromBackend();
