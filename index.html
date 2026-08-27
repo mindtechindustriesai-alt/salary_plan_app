@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <!-- ===== EXTERNAL CSS ===== -->
@@ -469,12 +470,39 @@
             projectId: "mindflow-ai-education" 
         };
         firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
         const db = firebase.firestore();
         let userId = localStorage.getItem('salary_user_id');
         if (!userId) { userId = 'user_' + Date.now(); localStorage.setItem('salary_user_id', userId); }
 
         // ========== BACKEND URL ==========
         const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
+
+        // ========== AUTH & TRIAL CHECK ==========
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (!userDoc.exists) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const userData = userDoc.data();
+                const trialEnd = userData.trialEnd?.toDate?.() || new Date(userData.trialEnd);
+                const now = new Date();
+                if (trialEnd && now > trialEnd) {
+                    const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
+                    alert(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue.`);
+                }
+                console.log(`✅ Welcome ${userData.displayName || 'User'}!`);
+                console.log(`📅 Trial ends: ${trialEnd?.toLocaleDateString()}`);
+            } catch (error) {
+                console.error('❌ User check error:', error);
+            }
+        });
 
         // ========== LOAD DATA FROM BACKEND ==========
         async function loadFromBackend() {
@@ -498,7 +526,6 @@
         }
 
         // ========== DEEPSEEK AI ==========
-        const DEEPSEEK_KEY = "sk-54161f65476a426793b4b8f7c8ab5bfc";
         async function callDeepSeek(prompt) {
             try {
                 const res = await fetch(`${BACKEND_URL}/api/v1/chat?message=${encodeURIComponent(prompt)}`);
@@ -820,8 +847,28 @@
         document.addEventListener('DOMContentLoaded', loadFromBackend);
 
         particlesJS('particles-js', {
-            particles: { number: { value: 55 }, color: { value: ["#00B4D8", "#00F5D4"] }, shape: { type: "circle" }, opacity: { value: 0.2, random: true }, size: { value: 2.5, random: true }, line_linked: { enable: true, distance: 150, color: "#00B4D8", opacity: 0.08 }, move: { enable: true, speed: 0.8 } },
-            interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+            particles: {
+                number: { value: 55 },
+                color: { value: ["#00B4D8", "#00F5D4"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2, random: true },
+                size: { value: 2.5, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00B4D8",
+                    opacity: 0.08
+                },
+                move: {
+                    enable: true,
+                    speed: 0.8
+                }
+            },
+            interactivity: {
+                events: {
+                    onhover: { enable: true, mode: "repulse" }
+                }
+            }
         });
 
         console.log('💰 SalaryPlan v2.1 | Backend URL:', BACKEND_URL);
@@ -830,65 +877,3 @@
     </script>
 </body>
 </html>
-
-    // ========== AUTH & TRIAL CHECK ==========
-    // Add this after Firebase config, before any other code
-    
-    auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-            window.location.href = '/login.html';
-            return;
-        }
-        
-        try {
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            if (!userDoc.exists) {
-                window.location.href = '/login.html';
-                return;
-            }
-            
-            const userData = userDoc.data();
-            const trialEnd = userData.trialEnd?.toDate?.() || new Date(userData.trialEnd);
-            const now = new Date();
-            
-            if (trialEnd && now > trialEnd) {
-                // Trial expired
-                const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
-                alert(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue using SalaryPlan.`);
-                // Redirect to subscription page (if exists)
-                // window.location.href = '/subscribe.html';
-            }
-            
-            console.log(`✅ Welcome ${userData.displayName || 'User'}!`);
-            console.log(`📅 Trial ends: ${trialEnd?.toLocaleDateString()}`);
-            
-        } catch (error) {
-            console.error('❌ User check error:', error);
-        }
-    });
-
-    // ========== AUTH & TRIAL CHECK ==========
-    auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-            window.location.href = '/login.html';
-            return;
-        }
-        try {
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            if (!userDoc.exists) {
-                window.location.href = '/login.html';
-                return;
-            }
-            const userData = userDoc.data();
-            const trialEnd = userData.trialEnd?.toDate?.() || new Date(userData.trialEnd);
-            const now = new Date();
-            if (trialEnd && now > trialEnd) {
-                const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
-                alert(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue.`);
-            }
-            console.log(`✅ Welcome ${userData.displayName || 'User'}!`);
-            console.log(`📅 Trial ends: ${trialEnd?.toLocaleDateString()}`);
-        } catch (error) {
-            console.error('❌ User check error:', error);
-        }
-    });
