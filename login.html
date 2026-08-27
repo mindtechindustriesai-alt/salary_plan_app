@@ -13,11 +13,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #00B4D8;
-            --primary-dark: #0096C7;
             --secondary: #00F5D4;
             --dark: #0A0F1A;
-            --glass: rgba(15, 25, 45, 0.6);
-            --glass-border: rgba(0, 180, 216, 0.25);
+            --glass: rgba(15, 25, 45, 0.85);
+            --glass-border: rgba(0, 180, 216, 0.3);
         }
         body {
             background: var(--dark);
@@ -55,7 +54,7 @@
             max-width: 180px;
             width: 100%;
             height: auto;
-            margin: 0 auto 16px;
+            margin: 0 auto 20px;
             display: block;
             filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.3));
         }
@@ -65,7 +64,7 @@
             background: linear-gradient(135deg, var(--secondary), var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .login-subtitle {
             font-size: 0.9rem;
@@ -80,7 +79,7 @@
             gap: 14px;
             width: 100%;
             padding: 16px;
-            background: white;
+            background: #ffffff;
             border: none;
             border-radius: 50px;
             font-size: 1.05rem;
@@ -89,7 +88,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Exo 2', sans-serif;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .btn-google:hover {
             transform: translateY(-3px);
@@ -103,7 +101,6 @@
         }
         .btn-google i { font-size: 1.5rem; }
         .trial-badge {
-            display: inline-block;
             margin-top: 22px;
             padding: 10px 24px;
             background: rgba(0, 255, 136, 0.12);
@@ -112,6 +109,7 @@
             font-size: 0.8rem;
             color: var(--secondary);
             font-weight: 500;
+            display: inline-block;
         }
         .trial-badge i { margin-right: 8px; }
         .quantum-badge {
@@ -119,7 +117,6 @@
             font-size: 0.7rem;
             color: #5A6A80;
             font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
         }
         .quantum-badge .chsh { color: var(--primary); font-weight: bold; }
         .quantum-badge .patent { color: var(--secondary); font-weight: bold; }
@@ -127,11 +124,10 @@
             font-size: 0.7rem;
             color: #5A6A80;
             margin-top: 12px;
-            letter-spacing: 0.5px;
         }
         .africa-text i { color: #FFD166; margin-right: 6px; }
         .error-msg {
-            background: rgba(239, 71, 111, 0.15);
+            background: rgba(239, 71, 111, 0.2);
             border: 1px solid #EF476F;
             border-radius: 12px;
             padding: 12px;
@@ -148,25 +144,8 @@
         }
         .loading i { animation: spin 1s linear infinite; margin-right: 8px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .version-badge {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-            font-size: 0.55rem;
-            color: #4A5A70;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-        }
-        .secure-badge {
-            margin-top: 14px;
-            font-size: 0.65rem;
-            color: #4A5A70;
-        }
-        .secure-badge i { color: var(--primary); margin: 0 4px; }
         @media (max-width: 480px) {
-            .login-container { padding: 35px 20px; margin: 20px; }
+            .login-container { padding: 30px 20px; margin: 20px; }
             .login-title { font-size: 1.8rem; }
             .login-logo { max-width: 140px; }
             .btn-google { font-size: 0.95rem; padding: 14px; }
@@ -176,8 +155,6 @@
 <body>
     <div id="particles-js"></div>
     <div class="login-container">
-        <div class="version-badge">v2.0</div>
-        
         <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="login-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
         
         <h1 class="login-title">SalaryPlan</h1>
@@ -197,10 +174,6 @@
             <i class="fas fa-gem"></i> 7-Day Free Trial · No Credit Card Required
         </div>
         
-        <div class="secure-badge">
-            <i class="fas fa-shield-alt"></i> Secured by Firebase · <i class="fas fa-lock"></i> Your data is safe
-        </div>
-        
         <div class="quantum-badge">
             ⚛️ <span class="chsh">CHSH S=2.76</span> · <span class="patent">SA 2026/05142</span>
         </div>
@@ -210,13 +183,11 @@
         </div>
     </div>
 
-    <!-- ===== FIREBASE SDKs ===== -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
             apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw",
             authDomain: "mindflow-ai-education.firebaseapp.com",
@@ -226,13 +197,11 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // ========== DOM ELEMENTS ==========
         const googleBtn = document.getElementById('googleLoginBtn');
         const errorMsg = document.getElementById('errorMsg');
         const loadingIndicator = document.getElementById('loadingIndicator');
         let isProcessing = false;
 
-        // ========== GOOGLE LOGIN FUNCTION ==========
         async function handleGoogleLogin() {
             if (isProcessing) return;
             isProcessing = true;
@@ -248,7 +217,6 @@
 
                 console.log('✅ User logged in:', user.uid);
 
-                // Check if user exists in Firestore
                 const userDoc = await db.collection('users').doc(user.uid).get();
 
                 if (userDoc.exists) {
@@ -260,7 +228,7 @@
                     const trialEnd = new Date();
                     trialEnd.setDate(trialEnd.getDate() + 7);
 
-                    const userData = {
+                    await db.collection('users').doc(user.uid).set({
                         uid: user.uid,
                         email: user.email,
                         displayName: user.displayName || user.email,
@@ -270,17 +238,10 @@
                         trialActive: true,
                         subscriptionStatus: 'trial',
                         plan: 'free_trial',
-                        hasCompletedOnboarding: false,
-                        quantumState: {
-                            chsh: 2.76,
-                            patent: 'SA 2026/05142',
-                            observed: false
-                        }
-                    };
-
-                    await db.collection('users').doc(user.uid).set(userData);
-                    console.log('✅ User profile created with 7-day trial!');
+                        quantumState: { chsh: 2.76, patent: 'SA 2026/05142' }
+                    });
                     
+                    console.log('✅ User profile created!');
                     window.location.replace('/index.html');
                 }
             } catch (error) {
@@ -293,56 +254,22 @@
             }
         }
 
-        // ========== EVENT LISTENER ==========
         googleBtn.addEventListener('click', handleGoogleLogin);
 
-        // ========== CHECK AUTH STATE - STABLE ==========
-        // Use a flag to prevent multiple redirects
-        let authCheckDone = false;
-
+        // Check if already logged in
         auth.onAuthStateChanged(async (user) => {
-            // Prevent multiple redirects
-            if (authCheckDone) return;
-            
             if (user) {
                 try {
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     if (userDoc.exists) {
-                        authCheckDone = true;
-                        console.log('✅ User already logged in, redirecting...');
-                        window.location.replace('/index.html');
-                    } else {
-                        // Profile missing - recreate it
-                        const trialEnd = new Date();
-                        trialEnd.setDate(trialEnd.getDate() + 7);
-                        await db.collection('users').doc(user.uid).set({
-                            uid: user.uid,
-                            email: user.email,
-                            displayName: user.displayName || user.email,
-                            photoURL: user.photoURL || '',
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            trialEnd: trialEnd,
-                            trialActive: true,
-                            subscriptionStatus: 'trial',
-                            plan: 'free_trial'
-                        });
-                        authCheckDone = true;
                         window.location.replace('/index.html');
                     }
-                } catch (error) {
-                    console.error('❌ Auth check error:', error);
-                    // Don't redirect on error, let user try again
+                } catch (e) {
+                    console.error('Auth check error:', e);
                 }
-            } else {
-                // User is not logged in - show login page
-                authCheckDone = true;
-                googleBtn.disabled = false;
-                loadingIndicator.style.display = 'none';
-                console.log('🔓 User not logged in, showing login page');
             }
         });
 
-        // ========== PARTICLES ==========
         particlesJS('particles-js', {
             particles: {
                 number: { value: 55 },
@@ -356,10 +283,7 @@
                     color: "#00B4D8",
                     opacity: 0.08
                 },
-                move: {
-                    enable: true,
-                    speed: 0.8
-                }
+                move: { enable: true, speed: 0.8 }
             },
             interactivity: {
                 events: {
