@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SalaryPlan Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -12,13 +14,25 @@
         body {
             background: #0A0F1A;
             color: #fff;
-            font-family: -apple-system, sans-serif;
+            font-family: 'Exo 2', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
         .login-box {
+            position: relative;
+            z-index: 1;
             background: rgba(15, 25, 45, 0.9);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 180, 216, 0.3);
@@ -27,6 +41,12 @@
             max-width: 400px;
             width: 100%;
             text-align: center;
+        }
+        .logo {
+            max-width: 160px;
+            margin: 0 auto 20px;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(0,180,216,0.3));
         }
         h1 {
             font-size: 2.5rem;
@@ -38,6 +58,7 @@
         .subtitle {
             color: #8A99B0;
             margin-bottom: 30px;
+            font-size: 0.9rem;
         }
         .btn-google {
             display: flex;
@@ -54,10 +75,15 @@
             color: #333;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Exo 2', sans-serif;
         }
         .btn-google:hover {
             transform: scale(1.02);
             box-shadow: 0 8px 30px rgba(0,180,216,0.3);
+        }
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         .trial-badge {
             margin-top: 20px;
@@ -83,6 +109,7 @@
             margin: 15px 0;
             color: #EF476F;
             display: none;
+            font-size: 0.85rem;
         }
         .loading {
             display: none;
@@ -91,35 +118,46 @@
         }
         .loading i { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        .africa {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: #5A6A80;
+        }
+        .africa i { color: #FFD166; margin-right: 6px; }
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
     <div class="login-box">
-        <h1>⚡ SalaryPlan</h1>
+        <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="logo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+        
+        <h1>SalaryPlan</h1>
         <p class="subtitle">Your Financial Intelligence</p>
-        
+
         <div id="errorMsg" class="error"></div>
-        
+
         <button class="btn-google" id="googleBtn">
-            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 019.5 24c0-1.59.28-3.14.76-4.59l-7.98-6.19A23.99 23.99 0 000 24c0 3.77.87 7.35 2.56 10.56l7.97-6.16z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-            Continue with Google
+            <i class="fab fa-google"></i> Continue with Google
         </button>
-        
+
         <div class="loading" id="loadingIndicator">
             <i class="fas fa-spinner"></i> Authenticating...
         </div>
-        
+
         <div class="trial-badge">
-            ✨ 7-Day Free Trial
+            <i class="fas fa-gem"></i> 7-Day Free Trial
         </div>
-        
+
         <div class="quantum">
             ⚛️ <span>CHSH S=2.76</span> · SA 2026/05142
+        </div>
+
+        <div class="africa">
+            <i class="fas fa-globe-africa"></i> Built in Africa, for Africa
         </div>
     </div>
 
     <script>
-        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw",
             authDomain: "mindflow-ai-education.firebaseapp.com",
@@ -146,9 +184,6 @@
                 const result = await auth.signInWithPopup(provider);
                 const user = result.user;
 
-                console.log('✅ Logged in:', user.uid);
-
-                // Check/create user profile
                 const userDoc = await db.collection('users').doc(user.uid).get();
                 if (!userDoc.exists) {
                     const trialEnd = new Date();
@@ -163,14 +198,10 @@
                         trialActive: true,
                         subscriptionStatus: 'trial'
                     });
-                    console.log('✅ New user profile created');
                 }
-
-                // Redirect to main app
                 window.location.replace('/index.html');
             } catch (error) {
-                console.error('❌ Login error:', error);
-                errorMsg.textContent = '❌ ' + error.message;
+                errorMsg.textContent = 'Login failed: ' + error.message;
                 errorMsg.style.display = 'block';
                 googleBtn.disabled = false;
                 loadingIndicator.style.display = 'none';
@@ -178,7 +209,6 @@
             }
         });
 
-        // Auto-redirect if already logged in
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
@@ -192,7 +222,30 @@
             }
         });
 
-        console.log('💰 SalaryPlan Login Page Ready');
+        // Particles
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 55 },
+                color: { value: ["#00B4D8", "#00F5D4"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.2, random: true },
+                size: { value: 2.5, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#00B4D8",
+                    opacity: 0.08
+                },
+                move: { enable: true, speed: 0.8 }
+            },
+            interactivity: {
+                events: {
+                    onhover: { enable: true, mode: "repulse" }
+                }
+            }
+        });
+
+        console.log('💰 SalaryPlan Login Ready');
         console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
     </script>
 </body>
