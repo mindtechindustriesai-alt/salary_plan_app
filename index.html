@@ -15,9 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js?v=2.0.1"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js?v=2.0.1"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js?v=2.0.1"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,34 +29,197 @@
             --warning: #FFD166;
             --danger: #EF476F;
             --dark: #0A0F1A;
-            --glass: rgba(15, 25, 45, 0.45);
-            --glass-border: rgba(0, 180, 216, 0.25);
+            --glass: rgba(15, 25, 45, 0.2);
+            --glass-border: rgba(0, 180, 216, 0.15);
+            --glass-blur: 30px;
         }
         body { background: var(--dark); color: #E8EDF5; font-family: 'Exo 2', sans-serif; min-height: 100vh; overflow-x: hidden; }
         #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
+        /* ===== FLOATING LOGO ===== */
         .salary-header { text-align: center; padding: 20px 0; position: relative; }
-        .salary-logo { max-width: 380px; width: 100%; height: auto; filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.5)); transition: all 0.3s; margin: 0 auto; display: block; }
+        .salary-logo { 
+            max-width: 380px; 
+            width: 100%; 
+            height: auto; 
+            filter: drop-shadow(0 0 30px rgba(0, 180, 216, 0.4)); 
+            animation: floatLogo 6s ease-in-out infinite;
+            transition: all 0.3s;
+            margin: 0 auto; 
+            display: block; 
+        }
+        .salary-logo:hover { 
+            transform: scale(1.02); 
+            filter: drop-shadow(0 0 50px rgba(0, 180, 216, 0.6)); 
+        }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
         .salary-tagline { font-size: 0.75rem; color: var(--secondary); letter-spacing: 3px; margin-top: 12px; opacity: 0.8; font-weight: 500; }
         
-        .notification-area { position: absolute; top: 20px; right: 20px; }
-        .notification-icon { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
-        .notification-icon:hover { background: rgba(0,180,216,0.3); transform: scale(1.05); }
-        .notification-icon .badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 10px; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
-        .notification-box { position: absolute; top: 55px; right: 0; width: 320px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; display: none; z-index: 100; max-height: 400px; overflow-y: auto; }
-        .notification-box.active { display: block; }
-        .notification-item { padding: 12px; border-bottom: 1px solid var(--glass-border); font-size: 12px; cursor: pointer; transition: all 0.2s; }
-        .notification-item:hover { background: rgba(0,180,216,0.1); }
-        .notification-item.unread { border-left: 3px solid var(--primary); background: rgba(0,180,216,0.08); }
+        /* ===== GLASS CARDS (More Transparent) ===== */
+        .glass-card { 
+            background: var(--glass); 
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            padding: 24px; 
+            margin-bottom: 20px; 
+            transition: all 0.3s; 
+        }
+        .glass-card:hover { 
+            border-color: rgba(0, 180, 216, 0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
         
+        .stat-card { 
+            background: var(--glass); 
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 18px; 
+            text-align: center; 
+            transition: all 0.3s; 
+        }
+        .stat-card:hover { 
+            border-color: rgba(0, 180, 216, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .monthly-report-box { 
+            background: var(--glass);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            transition: all 0.3s;
+        }
+        .monthly-report-box:hover {
+            border-color: rgba(0, 180, 216, 0.3);
+        }
+        
+        .bottom-logos { 
+            display: flex; 
+            justify-content: center; 
+            gap: 40px; 
+            margin: 30px 0 20px; 
+            padding: 20px; 
+            background: var(--glass);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 60px; 
+        }
+        
+        /* ===== NOTIFICATION BELL ===== */
+        .notification-area { position: absolute; top: 20px; right: 20px; }
+        .notification-icon { 
+            background: var(--glass); 
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 50%; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            position: relative;
+            font-size: 1.2rem;
+            color: #8A99B0;
+        }
+        .notification-icon:hover { 
+            background: rgba(0,180,216,0.2); 
+            transform: scale(1.05); 
+            border-color: rgba(0,180,216,0.4);
+            color: var(--secondary);
+        }
+        .notification-icon .badge { 
+            position: absolute; 
+            top: -4px; 
+            right: -4px; 
+            background: var(--danger); 
+            color: white; 
+            font-size: 9px; 
+            border-radius: 50%; 
+            width: 18px; 
+            height: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700;
+            border: 2px solid var(--dark);
+        }
+        .notification-box { 
+            position: absolute; 
+            top: 55px; 
+            right: 0; 
+            width: 320px; 
+            background: rgba(10, 15, 26, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 16px; 
+            padding: 15px; 
+            display: none; 
+            z-index: 100; 
+            max-height: 400px; 
+            overflow-y: auto; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .notification-box.active { display: block; }
+        .notification-item { 
+            padding: 12px; 
+            border-bottom: 1px solid var(--glass-border); 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-radius: 8px;
+        }
+        .notification-item:hover { background: rgba(0,180,216,0.08); }
+        .notification-item.unread { 
+            border-left: 3px solid var(--primary); 
+            background: rgba(0,180,216,0.05); 
+        }
+        .notification-item .time {
+            font-size: 9px;
+            color: #5A6A80;
+            margin-top: 4px;
+        }
+        
+        /* ===== REST OF STYLES ===== */
         .top-menu { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; margin-top: 10px; }
-        .menu-btn { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 10px 18px; color: white; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.3s; }
-        .menu-btn:hover, .menu-btn.active { background: rgba(0, 180, 216, 0.3); border-color: var(--primary); color: var(--secondary); transform: translateY(-2px); }
+        .menu-btn { 
+            background: var(--glass); 
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border); 
+            border-radius: 40px; 
+            padding: 10px 18px; 
+            color: #8A99B0; 
+            font-size: 12px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-family: 'Exo 2', sans-serif; 
+        }
+        .menu-btn:hover, .menu-btn.active { 
+            background: rgba(0, 180, 216, 0.15); 
+            border-color: var(--primary); 
+            color: var(--secondary); 
+            transform: translateY(-2px); 
+        }
         
         .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; text-align: center; transition: all 0.3s; }
-        .stat-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         .stat-value { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--secondary), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .stat-label { font-size: 0.65rem; color: #8A99B0; margin-top: 5px; font-weight: 500; }
         .cash-status { font-size: 0.7rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; display: inline-block; margin-top: 8px; }
@@ -68,8 +231,6 @@
         .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .glass-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; margin-bottom: 20px; transition: all 0.3s; }
-        .glass-card:hover { border-color: var(--primary); }
         .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--glass-border); }
         .card-header i { font-size: 1.4rem; color: var(--primary); }
         .card-header h3 { font-size: 1.1rem; font-weight: 600; }
@@ -77,7 +238,15 @@
         .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-size: 11px; color: var(--secondary); font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 14px; color: white; font-size: 13px; transition: all 0.3s; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; padding: 12px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 14px; 
+            color: white; 
+            font-size: 13px; 
+            transition: all 0.3s; 
+        }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0,180,216,0.2); }
         
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; padding: 14px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
@@ -86,8 +255,8 @@
         .btn-danger { background: linear-gradient(135deg, var(--danger), #FF6B4A); border: none; padding: 8px 14px; border-radius: 30px; color: white; font-size: 11px; cursor: pointer; }
         
         .debt-item, .borrow-item, .lend-item { background: rgba(0, 0, 0, 0.3); border-radius: 14px; padding: 14px; margin-bottom: 12px; transition: all 0.2s; }
-        .debt-item:hover, .borrow-item:hover, .lend-item:hover { background: rgba(0,180,216,0.1); }
-        .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .debt-item:hover, .borrow-item:hover, .lend-item:hover { background: rgba(0,180,216,0.08); }
+        .progress-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; margin: 10px 0; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 0.5s ease; }
         
         .daily-category { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--glass-border); }
@@ -96,7 +265,7 @@
         .sim-chat { background: rgba(0,0,0,0.3); border-radius: 16px; padding: 15px; height: 200px; overflow-y: auto; margin-bottom: 15px; font-size: 12px; }
         .sim-message { margin-bottom: 10px; padding: 10px 14px; border-radius: 16px; max-width: 85%; }
         .sim-message.user { background: var(--primary); margin-left: auto; text-align: right; }
-        .sim-message.ai { background: rgba(255,255,255,0.08); border-left: 2px solid var(--secondary); }
+        .sim-message.ai { background: rgba(255,255,255,0.06); border-left: 2px solid var(--secondary); }
         
         .rights-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
         .rights-header { color: var(--secondary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
@@ -105,10 +274,7 @@
         .rights-list li:before { content: "✓"; position: absolute; left: 0; color: var(--success); font-weight: bold; }
         .cant-list li:before { content: "✗"; color: var(--danger); }
         
-        .monthly-report-box { background: linear-gradient(135deg, rgba(0,180,216,0.1), rgba(0,245,212,0.05)); border: 1px solid var(--primary); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-        .carry-over { background: rgba(255,209,102,0.1); border-left: 3px solid var(--warning); padding: 12px; margin: 12px 0; border-radius: 8px; }
-        
-        .bottom-logos { display: flex; justify-content: center; gap: 40px; margin: 30px 0 20px; padding: 20px; background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 60px; }
+        .carry-over { background: rgba(255,209,102,0.08); border-left: 3px solid var(--warning); padding: 12px; margin: 12px 0; border-radius: 8px; }
         .bottom-logo { height: 40px; width: auto; opacity: 0.7; transition: all 0.3s; }
         .bottom-logo:hover { opacity: 1; transform: scale(1.05); }
         
@@ -117,9 +283,9 @@
         
         .about-card, .legal-card { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
         .version-badge { display: inline-block; background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 11px; margin-bottom: 15px; }
-        .cert-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,180,216,0.15); border: 1px solid var(--glass-border); border-radius: 30px; padding: 6px 14px; font-size: 11px; margin-right: 10px; margin-bottom: 10px; }
+        .cert-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,180,216,0.1); border: 1px solid var(--glass-border); border-radius: 30px; padding: 6px 14px; font-size: 11px; margin-right: 10px; margin-bottom: 10px; }
         
-        .form-success { background: rgba(0,255,136,0.15); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 15px; text-align: center; font-size: 13px; display: none; }
+        .form-success { background: rgba(0,255,136,0.1); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 15px; text-align: center; font-size: 13px; display: none; }
         
         @media (max-width: 900px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .form-grid { grid-template-columns: 1fr; } .salary-logo { max-width: 260px; } }
@@ -128,15 +294,20 @@
 <body>
     <div id="particles-js"></div>
     <div class="container">
+        <!-- ===== HEADER ===== -->
         <div class="salary-header">
             <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
             <div class="salary-tagline">YOUR MONEY. YOUR PLAN. YOUR FUTURE.</div>
             <div class="notification-area">
-                <div class="notification-icon" id="notificationIcon"><i class="fas fa-bell"></i><span class="badge" id="notificationBadge">0</span></div>
+                <div class="notification-icon" id="notificationIcon" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge" id="notificationBadge">0</span>
+                </div>
                 <div class="notification-box" id="notificationBox"></div>
             </div>
         </div>
 
+        <!-- ===== STATS ROW ===== -->
         <div class="stats-row">
             <div class="stat-card"><div class="stat-value" id="nettDisplay">R0</div><div class="stat-label">NETT SALARY</div></div>
             <div class="stat-card"><div class="stat-value" id="totalFixedDisplay">R0</div><div class="stat-label">FIXED EXPENSES</div></div>
@@ -145,6 +316,7 @@
             <div class="stat-card"><div class="stat-value" id="surplusDisplay">R0</div><div class="stat-label">💰 FUNDS FOR SAVINGS</div><div id="cashStatus" class="cash-status status-yellow">⚠️ CALCULATING</div></div>
         </div>
 
+        <!-- ===== MONTHLY REPORT ===== -->
         <div class="monthly-report-box">
             <div class="card-header"><i class="fas fa-chart-line"></i><h3>📊 Monthly Rehabilitation Report</h3></div>
             <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
@@ -159,12 +331,14 @@
             <button class="btn-primary" id="updateReportBtn">Update Monthly Report</button>
         </div>
 
+        <!-- ===== DAILY SPENDING REPORT ===== -->
         <div class="glass-card">
             <div class="card-header"><i class="fas fa-chart-simple"></i><h3>📅 Daily Spending Report</h3></div>
             <div id="dailyReportList" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px;"></div>
             <div><strong>📈 Highest spending day:</strong> <span id="highestSpendingDay">No data yet</span></div>
         </div>
 
+        <!-- ===== TOP MENU ===== -->
         <div class="top-menu">
             <button class="menu-btn active" data-section="salary">💰 Salary</button>
             <button class="menu-btn" data-section="fixed">🏠 Fixed</button>
@@ -181,7 +355,8 @@
             <button class="menu-btn" data-section="legal">⚖️ Legal</button>
         </div>
 
-        <!-- ===== ALL SECTIONS - FULL APP ===== -->
+        <!-- ===== ALL SECTIONS ===== -->
+        <!-- Salary -->
         <div id="section-salary" class="section active">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-chart-line"></i><h3>Monthly Salary</h3></div>
@@ -193,6 +368,7 @@
             </div>
         </div>
 
+        <!-- Fixed Expenses -->
         <div id="section-fixed" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-home"></i><h3>Fixed Expenses</h3></div>
@@ -220,6 +396,7 @@
             </div>
         </div>
 
+        <!-- Wages -->
         <div id="section-wages" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-clock"></i><h3>Wages & Weekly Budgeting</h3></div>
@@ -234,6 +411,7 @@
             </div>
         </div>
 
+        <!-- Daily -->
         <div id="section-daily" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-calendar-day"></i><h3>Daily Expenditures</h3></div>
@@ -251,6 +429,7 @@
             </div>
         </div>
 
+        <!-- Debt -->
         <div id="section-debt" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-shark"></i><h3>Debt Settlement Plan</h3></div>
@@ -267,6 +446,7 @@
             </div>
         </div>
 
+        <!-- Borrow -->
         <div id="section-borrow" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-hand-holding-usd"></i><h3>Money I Borrowed (Pay Back)</h3></div>
@@ -280,6 +460,7 @@
             </div>
         </div>
 
+        <!-- Lend -->
         <div id="section-lend" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-hand-holding-heart"></i><h3>Money I Lent (Expect Return)</h3></div>
@@ -293,6 +474,7 @@
             </div>
         </div>
 
+        <!-- Savings -->
         <div id="section-savings" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-piggy-bank"></i><h3>Savings Goal</h3></div>
@@ -307,6 +489,7 @@
             </div>
         </div>
 
+        <!-- Negotiation -->
         <div id="section-negotiate" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-microphone-alt"></i><h3>AI Negotiation Simulator</h3></div>
@@ -322,6 +505,7 @@
             </div>
         </div>
 
+        <!-- Rights -->
         <div id="section-rights" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-gavel"></i><h3>Know Your Rights as a Debtor</h3></div>
@@ -332,6 +516,7 @@
             </div>
         </div>
 
+        <!-- Suggestion -->
         <div id="section-suggest" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-lightbulb"></i><h3>💡 Suggestion Box</h3></div>
@@ -350,11 +535,12 @@
             </div>
         </div>
 
+        <!-- About -->
         <div id="section-about" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-info-circle"></i><h3>About SalaryPlan</h3></div>
                 <div class="about-card">
-                    <div class="version-badge">Version 2.0.0</div>
+                    <div class="version-badge">Version 2.0.1</div>
                     <p><strong>SalaryPlan</strong> is a financial intelligence platform built for South Africans, by South Africans.</p>
                     <ul class="rights-list">
                         <li>Track your salary and fixed expenses</li>
@@ -374,6 +560,7 @@
             </div>
         </div>
 
+        <!-- Legal -->
         <div id="section-legal" class="section">
             <div class="glass-card">
                 <div class="card-header"><i class="fas fa-gavel"></i><h3>Legal & Privacy</h3></div>
@@ -392,11 +579,13 @@
             </div>
         </div>
 
+        <!-- ===== BOTTOM LOGOS ===== -->
         <div class="bottom-logos">
             <img src="assets/logo/mindtech-logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
             <img src="assets/logo/mqos-logo.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
         </div>
         
+        <!-- ===== FOOTER ===== -->
         <div class="footer">
             <div class="quantum-line">⚛️ CHSH S=2.76 · SA 2026/05142</div>
             <p>© 2026 SalaryPlan · Built in Africa, for Africa · Powered by MindTech · R49/month</p>
@@ -418,7 +607,21 @@
 
         const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
 
-        // ========== AUTH & TRIAL CHECK - STABLE ==========
+        // ========== NOTIFICATION PERMISSION ==========
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    console.log('🔔 Notification permission:', permission);
+                    if (permission === 'granted') {
+                        addNotification('🔔 Notifications enabled! You\'ll get alerts here.');
+                    }
+                });
+            }
+        }
+        // Request permission on load
+        setTimeout(requestNotificationPermission, 2000);
+
+        // ========== AUTH & TRIAL CHECK ==========
         let authCheckDone = false;
 
         auth.onAuthStateChanged(async (user) => {
@@ -427,7 +630,7 @@
             if (!user) {
                 authCheckDone = true;
                 console.log('🔓 No user, redirecting to login...');
-                window.location.replace('/login.html');
+                window.location.replace('/login.html?v=2.0.1');
                 return;
             }
             
@@ -436,7 +639,7 @@
                 if (!userDoc.exists) {
                     authCheckDone = true;
                     console.log('⚠️ User profile missing, redirecting to login...');
-                    window.location.replace('/login.html');
+                    window.location.replace('/login.html?v=2.0.1');
                     return;
                 }
                 authCheckDone = true;
@@ -449,7 +652,7 @@
                     const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
                     console.log(`🔴 Trial expired ${daysOver} days ago`);
                     setTimeout(() => {
-                        alert(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue.`);
+                        addNotification(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue.`);
                     }, 1000);
                 }
                 
@@ -463,6 +666,46 @@
                 authCheckDone = true;
             }
         });
+
+        // ========== NOTIFICATION FUNCTIONS ==========
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationBox = document.getElementById('notificationBox');
+        
+        notificationIcon.addEventListener('click', (e) => { 
+            e.stopPropagation(); 
+            notificationBox.classList.toggle('active');
+            // If no notifications, show a message
+            if (document.querySelectorAll('.notification-item').length === 0) {
+                const box = document.getElementById('notificationBox');
+                box.innerHTML = '<div style="padding:20px;text-align:center;color:#5A6A80;font-size:13px;">🔔 No notifications yet</div>';
+            }
+        });
+        document.addEventListener('click', () => notificationBox.classList.remove('active'));
+        
+        function addNotification(msg) {
+            const box = document.getElementById('notificationBox');
+            // Remove empty state
+            const emptyState = box.querySelector('div[style*="padding:20px"]');
+            if (emptyState) emptyState.remove();
+            
+            const notif = document.createElement('div');
+            notif.className = 'notification-item unread';
+            const time = new Date().toLocaleTimeString();
+            notif.innerHTML = `${msg}<div class="time">${time}</div>`;
+            notif.onclick = () => { notif.classList.remove('unread'); updateBadge(); };
+            box.insertBefore(notif, box.firstChild);
+            updateBadge();
+            
+            // Show browser notification if permitted
+            if (Notification.permission === 'granted') {
+                new Notification('SalaryPlan', { body: msg, icon: '/assets/icons/icon-192x192.png' });
+            }
+        }
+        
+        function updateBadge() { 
+            let unread = document.querySelectorAll('.notification-item.unread').length; 
+            document.getElementById('notificationBadge').innerText = unread; 
+        }
 
         // ========== LOAD FROM BACKEND ==========
         async function loadFromBackend() {
@@ -507,23 +750,6 @@
                 document.getElementById(`section-${btn.dataset.section}`).classList.add('active');
             });
         });
-
-        // ========== NOTIFICATIONS ==========
-        const notificationIcon = document.getElementById('notificationIcon');
-        const notificationBox = document.getElementById('notificationBox');
-        notificationIcon.addEventListener('click', (e) => { e.stopPropagation(); notificationBox.classList.toggle('active'); });
-        document.addEventListener('click', () => notificationBox.classList.remove('active'));
-        function addNotification(msg) {
-            const box = document.getElementById('notificationBox');
-            const notif = document.createElement('div');
-            notif.className = 'notification-item unread';
-            notif.innerHTML = msg;
-            notif.onclick = () => { notif.classList.remove('unread'); updateBadge(); };
-            box.insertBefore(notif, box.firstChild);
-            updateBadge();
-            if(Notification.permission === 'granted') new Notification('SalaryPlan', { body: msg });
-        }
-        function updateBadge() { let unread = document.querySelectorAll('.notification-item.unread').length; document.getElementById('notificationBadge').innerText = unread; }
 
         // ========== DATA ==========
         let debts = [], borrows = [], lends = [], dailySpendingHistory = [];
@@ -762,7 +988,7 @@
             let offer = document.getElementById('negoOffer').value;
             let msg = `Hello. I can pay R${offer}/month. Please confirm.`;
             navigator.clipboard?.writeText(msg);
-            alert("✅ WhatsApp script copied!");
+            addNotification('✅ WhatsApp script copied to clipboard!');
         });
         document.getElementById('negoDebt')?.addEventListener('change', (e) => { simDebt = parseFloat(e.target.value) || 25000; });
         document.getElementById('negoOffer')?.addEventListener('change', (e) => { simOffer = parseFloat(e.target.value) || 1500; });
@@ -793,7 +1019,7 @@
         }
 
         // ========== INIT ==========
-        if(Notification.permission !== 'granted' && Notification.permission !== 'denied') Notification.requestPermission();
+        if(Notification.permission !== 'granted' && Notification.permission !== 'denied') setTimeout(requestNotificationPermission, 1000);
         loadDebts(); loadBorrows(); loadLends(); updateAll(); updateWeeklyBudget();
 
         document.addEventListener('DOMContentLoaded', loadFromBackend);
@@ -823,7 +1049,7 @@
             }
         });
 
-        console.log('💰 SalaryPlan v2.1 | Backend URL:', BACKEND_URL);
+        console.log('💰 SalaryPlan v2.0.1 | Backend URL:', BACKEND_URL);
         console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
         console.log('🌍 Built in Africa, for Africa');
     </script>
