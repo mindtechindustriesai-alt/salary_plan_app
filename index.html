@@ -59,7 +59,7 @@
         }
         .salary-tagline { font-size: 0.75rem; color: var(--secondary); letter-spacing: 3px; margin-top: 12px; opacity: 0.8; font-weight: 500; }
         
-        /* ===== GLASS CARDS (More Transparent) ===== */
+        /* ===== GLASS CARDS ===== */
         .glass-card { 
             background: var(--glass); 
             backdrop-filter: blur(var(--glass-blur));
@@ -296,7 +296,7 @@
     <div class="container">
         <!-- ===== HEADER ===== -->
         <div class="salary-header">
-            <img src="https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
+            <img src="assets/logo/salaryplan-logo.png" alt="SalaryPlan" class="salary-logo" id="mainLogo" onerror="this.src='https://i.postimg.cc/xCd7skpy/ideogram-v3-0-3D-glass-logo-for-a-financial-tech-app-called-Salary-Plan-A-floating-glass-shie-0-rem.png'">
             <div class="salary-tagline">YOUR MONEY. YOUR PLAN. YOUR FUTURE.</div>
             <div class="notification-area">
                 <div class="notification-icon" id="notificationIcon" title="Notifications">
@@ -581,31 +581,48 @@
 
         <!-- ===== BOTTOM LOGOS ===== -->
         <div class="bottom-logos">
-            <img src="https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
-            <img src="https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
+            <img src="assets/logo/mindtech-logo.png" alt="MindTech" class="bottom-logo" onerror="this.src='https://i.postimg.cc/zXW78GNH/Mind-Tech-Transparent-Logo.png'">
+            <img src="assets/logo/mqos-logo.png" alt="MQOS" class="bottom-logo" onerror="this.src='https://i.postimg.cc/RFQfK9k5/os-finallogo-removebg-preview.png'">
         </div>
         
         <!-- ===== FOOTER ===== -->
-        <div class="footer">
-            <div class="quantum-line">⚛️ CHSH S=2.76 · SA 2026/05142</div>
-            <p>© 2026 SalaryPlan · Built in Africa, for Africa · Powered by MindTech · R49/month</p>
-        </div>
+        <!-- ===== QUANTUM VERIFICATION FOOTER ===== -->
+        <footer style="text-align:center; padding: 15px; font-family: 'Courier New', monospace; opacity: 0.8; border-top: 1px solid rgba(0,180,216,0.1); margin-top: 20px;">
+            <div class="quantum-line">⚛️ CHSH S=2.76 · SA 2026/05142 | MindTech Quantum Intelligence</div>
+            <p style="font-size: 0.55rem; color: #4A5A6A; margin-top: 4px;">© 2026 MindTech Industries · Built in Africa, for Africa</p>
+        </footer>
     </div>
 
+    <!-- ============================================================
+         MINDTECH QUANTUM CORE — FIREBASE CONFIG
+         ============================================================ -->
     <script>
-        // ========== FIREBASE CONFIG ==========
-        const firebaseConfig = { 
-            apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw", 
-            authDomain: "mindflow-ai-education.firebaseapp.com", 
-            projectId: "mindflow-ai-education" 
+        // Shared MindTech Quantum Core Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5OB59lG6bAsmQ7A97zXP_MfQ5AM3BYaw",
+            authDomain: "mindflow-ai-education.firebaseapp.com",
+            projectId: "mindflow-ai-education",
+            storageBucket: "mindflow-ai-education.firebasestorage.app",
+            messagingSenderId: "157615197603",
+            appId: "1:157615197603:web:540d67781fc55d04c11e16"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+
+        // CHSH Quantum Hash Generator Baseline
+        const CHSH_HARDWARE_S = "2.76"; // SA Patent 2026/05142
+
+        console.log('⚛️ MindTech Quantum Core Initialized');
+        console.log('   CHSH S=' + CHSH_HARDWARE_S + ' · SA 2026/05142');
+        console.log('   🔐 Firebase Auth Ready');
+        console.log('   🗄️ Firestore Ready');
         let userId = localStorage.getItem('salary_user_id');
         if (!userId) { userId = 'user_' + Date.now(); localStorage.setItem('salary_user_id', userId); }
 
-        const BACKEND_URL = 'https://salaryplan-api-v2.onrender.com';
+        // ========== BACKEND URL ==========
+        const BACKEND_URL = 'https://luvuno-backend-proxy.onrender.com';
 
         // ========== NOTIFICATION PERMISSION ==========
         function requestNotificationPermission() {
@@ -613,12 +630,11 @@
                 Notification.requestPermission().then(permission => {
                     console.log('🔔 Notification permission:', permission);
                     if (permission === 'granted') {
-                        addNotification('🔔 Notifications enabled! You\'ll get alerts here.');
+                        addNotification('🔔 Notifications enabled!');
                     }
                 });
             }
         }
-        // Request permission on load
         setTimeout(requestNotificationPermission, 2000);
 
         // ========== AUTH & TRIAL CHECK ==========
@@ -652,7 +668,7 @@
                     const daysOver = Math.floor((now - trialEnd) / (1000 * 60 * 60 * 24));
                     console.log(`🔴 Trial expired ${daysOver} days ago`);
                     setTimeout(() => {
-                        addNotification(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe to continue.`);
+                        addNotification(`🔴 Your 7-day trial ended ${daysOver} days ago. Please subscribe.`);
                     }, 1000);
                 }
                 
@@ -674,17 +690,15 @@
         notificationIcon.addEventListener('click', (e) => { 
             e.stopPropagation(); 
             notificationBox.classList.toggle('active');
-            // If no notifications, show a message
             if (document.querySelectorAll('.notification-item').length === 0) {
                 const box = document.getElementById('notificationBox');
-                box.innerHTML = '<div style="padding:20px;text-align:center;color:#5A6A80;font-size:13px;">🔔 No notifications yet</div>';
+                box.innerHTML = '<div style="padding:20px;text-align:center;color:#5A6A80;font-size:13px;">🔔 No notifications</div>';
             }
         });
         document.addEventListener('click', () => notificationBox.classList.remove('active'));
         
         function addNotification(msg) {
             const box = document.getElementById('notificationBox');
-            // Remove empty state
             const emptyState = box.querySelector('div[style*="padding:20px"]');
             if (emptyState) emptyState.remove();
             
@@ -696,9 +710,8 @@
             box.insertBefore(notif, box.firstChild);
             updateBadge();
             
-            // Show browser notification if permitted
             if (Notification.permission === 'granted') {
-                new Notification('SalaryPlan', { body: msg, icon: '/assets/icons/icon-192x192.png' });
+                new Notification('SalaryPlan', { body: msg });
             }
         }
         
@@ -707,10 +720,137 @@
             document.getElementById('notificationBadge').innerText = unread; 
         }
 
+        // ========== AI CHAT (LUVUNO BACKEND) ==========
+        async function callDeepSeek(message) {
+            // =========================================================
+            // 1. FIRST: Try the real SalaryPlan backend
+            // =========================================================
+            try {
+                console.log('🤖 Calling SalaryPlan AI API...');
+
+                const response = await fetch(
+                    'https://salaryplan-api-v2.onrender.com/api/chat',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: message })
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.response) return data.response;
+                if (data.message) return data.message;
+
+                throw new Error('Backend returned no usable AI response.');
+
+            } catch (error) {
+                console.warn(
+                    '⚠️ SalaryPlan backend unavailable — using fallback AI:',
+                    error.message
+                );
+
+                // =====================================================
+                // 2. FALLBACK AI — LOCAL RULE-BASED RESPONSES
+                // =====================================================
+                const msg = String(message || '').toLowerCase().trim();
+
+                if (
+                    msg.includes('pay') ||
+                    msg.includes('offer') ||
+                    msg.includes('installment') ||
+                    msg.includes('instalment') ||
+                    msg.includes('settle') ||
+                    msg.includes('settlement')
+                ) {
+                    return `📉 That's a reasonable starting point.
+
+Let's structure the proposal:
+
+1. Confirm what you can realistically afford.
+2. Work out a monthly amount that fits your budget.
+3. Propose a clear repayment period.
+4. Ask the creditor to confirm any arrangement in writing.
+
+I can help you draft the proposal or negotiation script.`;
+                }
+
+                if (
+                    msg.includes('can i') ||
+                    msg.includes('can we') ||
+                    msg.includes('is it possible') ||
+                    msg.includes('possible')
+                ) {
+                    return `💡 It may be possible.
+
+The best approach is to make a written proposal based on what you can genuinely afford and ask the creditor to confirm any agreement in writing.
+
+I can help you prepare the proposal step by step.`;
+                }
+
+                if (
+                    msg.includes('help') ||
+                    msg.includes('advice') ||
+                    msg.includes('rights') ||
+                    msg.includes('nca') ||
+                    msg.includes('legal')
+                ) {
+                    return `🧠 I'm your SalaryPlan negotiation assistant.
+
+A good starting point is:
+
+1. Understand the amount you owe.
+2. Check what you can realistically afford.
+3. Keep copies of all correspondence.
+4. Ask for agreements in writing.
+5. If you're unsure about your legal rights, consider getting advice from a qualified professional.
+
+Tell me what you're dealing with and I can help you organise the next steps.`;
+                }
+
+                if (
+                    msg.includes('budget') ||
+                    msg.includes('afford') ||
+                    msg.includes('salary') ||
+                    msg.includes('income') ||
+                    msg.includes('expense')
+                ) {
+                    return `💰 Let's start with affordability.
+
+The key figures are:
+
+• Monthly income
+• Essential monthly expenses
+• Existing debt payments
+• Amount currently available for repayment
+
+Once you have those figures, we can work out a realistic repayment proposal.`;
+                }
+
+                return `⚛️ SalaryPlan Quantum Intelligence is active.
+
+The external AI service is currently unavailable, but the local fallback assistant is still working.
+
+Try asking something like:
+
+• "I can pay R500 per month."
+• "Can I negotiate my debt?"
+• "What are my rights?"
+• "Help me prepare an offer."
+• "How much can I afford to pay?"`;
+            }
+        }
+
         // ========== LOAD FROM BACKEND ==========
         async function loadFromBackend() {
             try {
-                const response = await fetch(`${BACKEND_URL}/api/v1/health`);
+                const response = await fetch(`${BACKEND_URL}/health`);
                 const data = await response.json();
                 console.log('✅ Backend connected:', data);
                 if (data.chsh) {
@@ -723,55 +863,6 @@
             } catch (error) {
                 console.log('⚠️ Backend unavailable, using local data');
                 return null;
-            }
-        }
-
-        // ========== DEEPSEEK ==========
-        // ========== DEEPSEEK AI - DIRECT API ==========
-        // ========== OPENROUTER AI - FREE TIER ==========
-        async function callDeepSeek(prompt) {
-            try {
-                console.log("🤖 Calling OpenRouter AI...");
-                
-                const response = await fetch("https://openrouter.ai/api/chat", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": "Bearer OPENROUTER_API_KEY",
-                        "Content-Type": "application/json",
-                        "HTTP-Referer": "https://salary-plan-app.onrender.com",
-                        "X-Title": "SalaryPlan"
-                    },
-                    body: JSON.stringify({
-                        model: "deepseek/deepseek-chat:free",
-                        messages: [
-                            {
-                                role: "system",
-                                content: "You are a tough but fair creditor negotiating debt repayment in South Africa. Be realistic, firm but reasonable. Use South African rand (R). Keep responses under 3 sentences."
-                            },
-                            {
-                                role: "user",
-                                content: prompt
-                            }
-                        ],
-                        temperature: 0.8,
-                        max_tokens: 300
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error("OpenRouter API error:", response.status, errorText);
-                    return "⚛️ CHSH S=2.76 quantum intelligence active. AI service is currently busy. Please try again in a moment.";
-                }
-
-                const data = await response.json();
-                const reply = data.choices?.[0]?.message?.content || "AI response not available.";
-                console.log("🤖 OpenRouter reply:", reply);
-                return reply;
-
-            } catch (error) {
-                console.error("❌ OpenRouter API error:", error);
-                return "⚛️ CHSH S=2.76 quantum intelligence active. Network error. Please check your connection and try again.";
             }
         }
 
@@ -821,7 +912,7 @@
             if(payDay) {
                 let today = new Date();
                 let payDayDate = new Date(payDay);
-                if(today.getDate() === payDayDate.getDate()) addNotification(`💰 Pay Day today! Salary of R${salary.toFixed(0)} should be deposited.`);
+                if(today.getDate() === payDayDate.getDate()) addNotification(`💰 Pay Day today! Salary of R${salary.toFixed(0)} deposited.`);
             }
             updateMonthlyReport();
             updateWeeklyBudget();
@@ -936,7 +1027,7 @@
             let name = document.getElementById('borrowName').value;
             let amount = parseFloat(document.getElementById('borrowAmount').value);
             let due = document.getElementById('borrowDue').value;
-            if(name && amount) { borrows.push({ name, amount, due }); renderBorrows(); saveBorrows(); updateAll(); document.getElementById('borrowName').value = ''; document.getElementById('borrowAmount').value = ''; document.getElementById('borrowDue').value = ''; addNotification(`📝 Added borrowed money: R${amount} from ${name}`); }
+            if(name && amount) { borrows.push({ name, amount, due }); renderBorrows(); saveBorrows(); updateAll(); document.getElementById('borrowName').value = ''; document.getElementById('borrowAmount').value = ''; document.getElementById('borrowDue').value = ''; addNotification(`📝 Borrowed R${amount} from ${name}`); }
         });
 
         // ========== LEND ==========
@@ -955,7 +1046,7 @@
             let name = document.getElementById('lendName').value;
             let amount = parseFloat(document.getElementById('lendAmount').value);
             let due = document.getElementById('lendDue').value;
-            if(name && amount) { lends.push({ name, amount, due }); renderLends(); saveLends(); document.getElementById('lendName').value = ''; document.getElementById('lendAmount').value = ''; document.getElementById('lendDue').value = ''; addNotification(`📝 Lent money: R${amount} to ${name}`); }
+            if(name && amount) { lends.push({ name, amount, due }); renderLends(); saveLends(); document.getElementById('lendName').value = ''; document.getElementById('lendAmount').value = ''; document.getElementById('lendDue').value = ''; addNotification(`📝 Lent R${amount} to ${name}`); }
         });
 
         // ========== DAILY SPENDING ==========
@@ -984,7 +1075,7 @@
             let months = parseFloat(document.getElementById('goalMonths').value) || 1;
             let monthly = target / months;
             let surplus = parseFloat(document.getElementById('surplusDisplay').innerText.replace('R', '')) || 0;
-            let advice = monthly > surplus ? `⚠️ Need R${monthly.toFixed(0)}/month, only have R${surplus.toFixed(0)} surplus.` : `✅ Achievable! Save R${monthly.toFixed(0)}/month.`;
+            let advice = monthly > surplus ? `⚠️ Need R${monthly.toFixed(0)}/month, have R${surplus.toFixed(0)} surplus.` : `✅ Achievable! Save R${monthly.toFixed(0)}/month.`;
             document.getElementById('savingsResult').innerHTML = `<strong>${document.getElementById('goalType').value}</strong><br>Target: R${target} in ${months} months<br>Monthly: R${monthly.toFixed(0)}<br>${advice}`;
             let aiIdeas = await callDeepSeek(`Generate 4 business ideas for someone in South Africa saving R${target} over ${months} months. Be practical.`);
             document.getElementById('aiIdeas').innerHTML = `<div class="card-header"><i class="fas fa-lightbulb"></i><h3>🤖 AI Business Ideas</h3></div><div style="background:rgba(0,0,0,0.2); border-radius:12px; padding:12px;">${aiIdeas.replace(/\n/g, '<br>')}</div>`;
@@ -1007,7 +1098,8 @@
             if(!response) return;
             addSimMessage('user', response);
             document.getElementById('userResponse').value = '';
-            let aiReply = await callDeepSeek(`You are a tough ${document.getElementById('negoType').value}. User owes R${simDebt}. User says: "${response}". Respond realistically.`);
+            // Send ONLY the raw user message - backend handles the persona
+            let aiReply = await callDeepSeek(response);
             addSimMessage('ai', aiReply);
             let score = Math.min(10, Math.floor(simOffer / simDebt * 100) + (response.length > 20 ? 2 : 0));
             document.getElementById('scoreValue').innerText = score;
@@ -1022,7 +1114,7 @@
             let offer = document.getElementById('negoOffer').value;
             let msg = `Hello. I can pay R${offer}/month. Please confirm.`;
             navigator.clipboard?.writeText(msg);
-            addNotification('✅ WhatsApp script copied to clipboard!');
+            addNotification('✅ WhatsApp script copied!');
         });
         document.getElementById('negoDebt')?.addEventListener('change', (e) => { simDebt = parseFloat(e.target.value) || 25000; });
         document.getElementById('negoOffer')?.addEventListener('change', (e) => { simOffer = parseFloat(e.target.value) || 1500; });
@@ -1083,7 +1175,7 @@
             }
         });
 
-        console.log('💰 SalaryPlan v2.0.1 | Backend URL:', BACKEND_URL);
+        console.log('💰 SalaryPlan v2.0.1');
         console.log('⚛️ CHSH S=2.76 · SA 2026/05142');
         console.log('🌍 Built in Africa, for Africa');
     </script>
